@@ -37,6 +37,20 @@
                     <img src="../../assets/logOut.png" />删除钱包
                 </v-ons-list-item>
             </v-ons-list>
+            <v-ons-list class="index_list" v-if="$store.state.wallet.name"
+                        @click="actionSheetVisible=true"
+                        style="margin-top: 10px;" >
+                <v-ons-list-item tappable modifier="chevron">
+                    <img src="../../assets/reward.png" />打赏作者
+                </v-ons-list-item>
+            </v-ons-list>
+            <v-ons-action-sheet v-if="$store.state.wallet.name"
+                    :visible.sync="actionSheetVisible"
+                    cancelable
+                    title="打赏作者">
+                <v-ons-action-sheet-button @click="rewar(item)" v-for="item in $store.state.wallet.list" icon="md-square-o">{{item.txt}}</v-ons-action-sheet-button>
+                <v-ons-action-sheet-button @click="actionSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
+            </v-ons-action-sheet>
         </div>
     </v-ons-page>
 
@@ -58,9 +72,13 @@
                     },
                     {
                         page: require('@/components/wallet/phrase').default
+                    },
+                    {
+                        page: require('@/components/wallet/out').default
                     }
                 ],
-                password: ''
+                password: '',
+                actionSheetVisible:false
             };
         },
         methods: {
@@ -94,7 +112,10 @@
                     }
                 })
             },
-
+            rewar(item){
+                this.actionSheetVisible=false;
+                this.$store.commit('push', {page: this.pages[4].page,txt:{model:item,to:'NXT-X949-FWSQ-BQFD-7B5PQ'}});
+            }
         }
 
     };

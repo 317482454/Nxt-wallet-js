@@ -8,7 +8,7 @@
             <div class="zhs_left" @click="$store.commit('pop')">
                 <img src="../../assets/left.png"/>
             </div>
-            <div class="copy publickey" v-show="!$store.state.pageText.model.is" :index="$store.state.pageText.model.publickey">公钥</div>
+            <div class="copy zhs_right" v-show="!$store.state.pageText.model.is" :index="$store.state.pageText.model.publickey">公钥</div>
         </div>
         <div class="imgSrc">
             <img id="imgSrc"/>
@@ -71,9 +71,7 @@
         border-radius: 4px;
     }
 
-    .publickey{
-        position: absolute; width: 20%; height: 100%; top: 0;right: 0; text-align: center;
-    }
+
     .addrCopy {
         width: 310px;
         margin: 30px auto;

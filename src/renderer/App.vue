@@ -45,8 +45,9 @@
                         })
                         model.push(v);
                     })
-                    this.ticker()
+
                 }
+                this.ticker()
             },
             ticker() {
                 this.$http.get("http://97.64.126.168:3003/").then(v => {

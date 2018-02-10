@@ -9,14 +9,15 @@
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
                 </div>
+                <div @click="addPeers" class="zhs_right">添加节点</div>
             </div>
             <ons-list>
                 <ons-list-item v-for="(item,index) in peers" style="padding: 0 0 0 20px;">
                     <label class="center" style="padding: 14px 6px 14px 0;">
-                        {{item.address}}:{{item.apiPort}}
+                        {{item.api}}
                     </label>
                     <div class="right">
-                        <v-ons-switch @change="test(index)" :input-id="item.address" v-model="item.is"></v-ons-switch>
+                        <v-ons-switch @change="test(index)" :input-id="item.api" v-model="item.is"></v-ons-switch>
                     </div>
                 </ons-list-item>
             </ons-list>
@@ -39,13 +40,24 @@
                     v.is = false;
                 })
                 this.$set(this.peers[index], 'is', true);
-                let api = 'http://' + this.peers[index].address + ':' + this.peers[index].apiPort;
+                let api = this.peers[index].api;
                 this.$store.state.wallet.list.forEach(v => {
                     if (v.txt == 'Nxt') {
                         v.api = api;
                     }
                 });
                 this.$store.commit('setWallet', this.$store.state.wallet);
+            },
+            addPeers(){
+                let _this=this;
+                this.$ons.notification.prompt({
+                    'title': '提示',
+                    'message': '例：http://115.171.203.184:7876（只能是http）',
+                    'callback': function (data) {
+                        _this.peers.unshift({api:data,is:false})
+                        console.log(data);
+                    }
+                });
             }
         },
         mounted: function () {
@@ -56,17 +68,35 @@
                 }
             });
             this.peers = [];
-            this.$http.get('http://178.33.203.157:7876/nxt-proxy?requestType=getPeers&active=true&includePeerInfo=true').then(v => {
+            let bis=false;
+            this.$http.get( api+'/nxt-proxy?requestType=getPeers&active=true&includePeerInfo=true').then(v => {
                 if (v.status == 200) {
                     v.data.peers.forEach(item => {
                         if (item.state == 1 && item.apiPort != undefined) {
                             let api2 = 'http://' + item.address + ':' + item.apiPort;
-                            item.is = api == api2 ? true : false;
-                            this.peers.push(item)
+                            let model={
+                                api:api2,
+                                is:false
+                            }
+                            if(api == api2){
+                                bis=true;
+                                model.is =true;
+                                this.peers.unshift(model)
+                            }else{
+                                this.peers.push(model)
+                            }
                         }
                     })
+                    if(!bis){
+                        let model={
+                            api:api,
+                            is:true
+                        }
+                        this.peers.unshift(model)
+                    }
                 }
             })
+
         }
     }
 </script>

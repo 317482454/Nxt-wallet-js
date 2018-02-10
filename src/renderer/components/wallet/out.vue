@@ -81,7 +81,8 @@
         },
         methods: {
             save() {
-                if (this.$store.state.pageText.model.sum == 0 || !(this.tx.count <= this.$store.state.pageText.model.sum)) {
+                if ((parseFloat(this.tx.count)+parseFloat(this.tx.fees))>parseFloat(this.$store.state.pageText.model.sum)
+                ||(parseFloat(this.tx.count)+parseFloat(this.tx.fees))<1) {
                     this.$ons.notification.alert({
                         'title': '提示',
                         'message': '请输入正确的金额'
@@ -223,7 +224,9 @@
             }
         },
         created: function () {
-
+            if(this.$store.state.pageText.to!=''){
+                this.tx.to=this.$store.state.pageText.to;
+            }
         }
     }
 </script>

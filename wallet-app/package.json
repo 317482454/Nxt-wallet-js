@@ -1,6 +1,6 @@
 {
   "name": "io.nxt.wallet",
-  "displayName": "Nxt-wallet",
+  "displayName": "HelloCordova",
   "version": "1.0.0",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
@@ -10,7 +10,7 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "cordova-android": "^6.4.0",
+    "cordova-android": "^6.3.0",
     "cordova-ios": "^4.5.4",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-qrscanner": "^2.5.0",
@@ -20,13 +20,13 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-whitelist": {},
       "cordova-plugin-qrscanner": {},
-      "cordova-plugin-splashscreen": {}
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-whitelist": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

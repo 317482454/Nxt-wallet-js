@@ -156,6 +156,10 @@
                 margin-left: 20px;
             }
         }
+        .zhs_right{
+            position: absolute; width: 20%; height: 100%; top: 0;right: 0; text-align: center;
+
+        }
     }
 
     .zhs_ps {

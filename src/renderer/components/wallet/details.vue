@@ -1,20 +1,23 @@
 <template>
     <v-ons-page>
 
-        <v-ons-toolbar style="">
-            <div class="left" @click="$store.commit('pop')">
-                <img src="../../assets/left.png" />
-            </div>
-            <div class="center" style="font-size: 14px" > {{$store.state.pageText.model.txt}} 明细</div>
-        </v-ons-toolbar>
-        <div style="height: 60px;width: 100%"></div>
-        <v-ons-pull-hook  :action="loadItem" :height="84" @changestate="state = $event.state">
+        <v-ons-pull-hook :action="loadItem" :height="84" @changestate="state = $event.state">
             <v-ons-icon size="22px" class="pull-hook-spinner"
                         :icon="state === 'action' ? 'fa-spinner' : 'fa-arrow-down'"
                         :rotate="state === 'preaction' && 180" :spin="state === 'action'"></v-ons-icon>
         </v-ons-pull-hook>
 
+
         <section >
+            <div class="zhs_head">
+                <img src="../../assets/head.png" class="zhs_head"/>
+                <div class="zhs_txt">
+                    {{$store.state.pageText.model.txt}} 明细
+                </div>
+                <div class="zhs_left" @click="$store.commit('pop')">
+                    <img src="../../assets/left.png"/>
+                </div>
+            </div>
             <div class="details_List" v-for="item in list2">
                 <div class="details_List_sum">
                     <div>
