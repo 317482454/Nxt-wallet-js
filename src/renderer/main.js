@@ -17,8 +17,9 @@ Vue.config.productionTip = false
 store.commit('getWallet')
 Vue.prototype.md =false;
 
-/*import eruda from  'eruda'
-eruda.init()*/
+import "babel-polyfill";
+// import eruda from  'eruda'
+// eruda.init()
 
 /* eslint-disable no-new */
 new Vue({
