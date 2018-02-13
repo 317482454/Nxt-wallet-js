@@ -7,7 +7,6 @@
                         :rotate="state === 'preaction' && 180" :spin="state === 'action'"></v-ons-icon>
         </v-ons-pull-hook>
 
-
         <section >
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
@@ -54,6 +53,11 @@
             <div style="height: 60px;width: 100%">
             </div>
         </section>
+        <v-ons-modal :visible="modalVisible" >
+            <p style="text-align: center">
+                Loading <v-ons-icon icon="fa-spinner" spin></v-ons-icon>
+            </p>
+        </v-ons-modal>
     </v-ons-page>
 </template>
 
@@ -63,11 +67,13 @@
             return{
                 list2:[],
                 state: 'initial',
+                modalVisible:true
             }
         },
         methods: {
             load(){
                 this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText.model).then(sum=>{
+                    this.modalVisible=false;
                     sum.forEach(v=>{
                         v.time=this.$g.wallet.formatDateTime(v.blockTimestamp+1385294348);
                         v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(2);
@@ -79,6 +85,8 @@
                         }
                     })
                     this.list2=sum;
+                }).catch(error=>{
+                    this.modalVisible=false;
                 })
             },
             loadItem(done) {

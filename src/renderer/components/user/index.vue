@@ -28,7 +28,7 @@
                 <v-ons-list-item tappable modifier="chevron" @click="push(pages[3].page)">
                     <img src="../../assets/Phrase.png" />导出助记词
                 </v-ons-list-item>
-                <v-ons-list-item tappable modifier="chevron" @click="push(pages[2].page)">
+                <v-ons-list-item tappable modifier="chevron" @click="peersSheetVisible=true" >
                     <img src="../../assets/yun.png" />节点
                 </v-ons-list-item>
             </v-ons-list>
@@ -44,13 +44,22 @@
                     <img src="../../assets/reward.png" />打赏作者
                 </v-ons-list-item>
             </v-ons-list>
-            <v-ons-action-sheet v-if="$store.state.wallet.name"
-                    :visible.sync="actionSheetVisible"
-                    cancelable
-                    title="打赏作者">
-                <v-ons-action-sheet-button @click="rewar(item)" v-for="item in $store.state.wallet.list" icon="md-square-o">{{item.txt}}</v-ons-action-sheet-button>
-                <v-ons-action-sheet-button @click="actionSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
-            </v-ons-action-sheet>
+           <section v-show="$store.state.wallet.name">
+               <v-ons-action-sheet :visible.sync="peersSheetVisible"
+                                   cancelable
+                                   title="修改节点选择">
+                   <v-ons-action-sheet-button @click="peers('Nxt')"   icon="md-square-o">Nxt</v-ons-action-sheet-button>
+                   <v-ons-action-sheet-button @click="peers('Ardr')"  icon="md-square-o">Ardr</v-ons-action-sheet-button>
+
+                   <v-ons-action-sheet-button @click="actionSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
+               </v-ons-action-sheet>
+               <v-ons-action-sheet :visible.sync="actionSheetVisible"
+                                   cancelable
+                                   title="打赏作者">
+                   <v-ons-action-sheet-button @click="rewar(item)" v-for="item in $store.state.wallet.list" icon="md-square-o">{{item.txt}}</v-ons-action-sheet-button>
+                   <v-ons-action-sheet-button @click="actionSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
+               </v-ons-action-sheet>
+           </section>
         </div>
     </v-ons-page>
 
@@ -78,7 +87,8 @@
                     }
                 ],
                 password: '',
-                actionSheetVisible:false
+                actionSheetVisible:false,
+                peersSheetVisible:false
             };
         },
         methods: {
@@ -114,7 +124,16 @@
             },
             rewar(item){
                 this.actionSheetVisible=false;
-                this.$store.commit('push', {page: this.pages[4].page,txt:{model:item,to:'NXT-X949-FWSQ-BQFD-7B5PQ'}});
+                let addr='NXT-X949-FWSQ-BQFD-7B5PQ'
+                if(item.txt!='Nxt'){
+                    addr='ARDOR-X949-FWSQ-BQFD-7B5PQ'
+                }
+                this.$store.commit('push', {page: this.pages[4].page,txt:{model:item,to:addr}});
+            },
+            peers(txt){
+                this.peersSheetVisible=false;
+                this.$store.commit('push', {page: this.pages[2].page,txt:txt});
+
             }
         }
 

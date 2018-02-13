@@ -29,7 +29,7 @@
         name: 'app',
         methods: {
             list() {
-                if (this.$store.state.wallet.list) {
+                if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
                     let model = [];
                     this.$store.state.wallet.list.forEach((v, k) => {
                         this.$g.wallet.getAccount(this, v).then(sum => {
@@ -50,16 +50,18 @@
                 this.ticker()
             },
             ticker() {
-                this.$http.get("http://97.64.126.168:3003/").then(v => {
+                this.$http.get("http://localhost:3003/").then(v => {
                     let sum = 0;
                     this.$store.state.ticker = v.data;
-                    this.$store.state.wallet.list.forEach(model => {
-                        this.$store.state.ticker.forEach(item => {
-                            if (model.txt == item.ticker.name) {
-                                sum = sum + parseFloat(item.ticker.price_cny).toFixed(2) * model.sum;
-                            }
+                    if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
+                        this.$store.state.wallet.list.forEach(model => {
+                            this.$store.state.ticker.forEach(item => {
+                                if (model.txt == item.ticker.name) {
+                                    sum = sum + parseFloat(item.ticker.price_cny).toFixed(2) * model.sum;
+                                }
+                            })
                         })
-                    })
+                    }
                     this.$store.state.sum = sum.toFixed(2);
                 })
             }
@@ -68,7 +70,7 @@
             this.list();
             setInterval(() => {
                 this.list();
-            }, 1000);
+            }, 10000);
         }
     }
 </script>

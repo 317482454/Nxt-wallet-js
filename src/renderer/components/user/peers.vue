@@ -21,6 +21,11 @@
                     </div>
                 </ons-list-item>
             </ons-list>
+            <v-ons-modal :visible="modalVisible" >
+                <p style="text-align: center">
+                    Loading <v-ons-icon icon="fa-spinner" spin></v-ons-icon>
+                </p>
+            </v-ons-modal>
         </section>
     </v-ons-page>
 </template>
@@ -31,7 +36,8 @@
         name: "peers",
         data() {
             return {
-                peers: []
+                peers: [],
+                modalVisible:true
             }
         },
         methods: {
@@ -41,35 +47,48 @@
                 })
                 this.$set(this.peers[index], 'is', true);
                 let api = this.peers[index].api;
-                this.$store.state.wallet.list.forEach(v => {
-                    if (v.txt == 'Nxt') {
-                        v.api = api;
-                    }
-                });
-                this.$store.commit('setWallet', this.$store.state.wallet);
+                if(this.$store.state.pageText=='Nxt') {
+                    this.$store.state.wallet.list.forEach(v => {
+                        if (v.txt == 'Nxt') {
+                            v.api = api;
+                        }
+                    });
+                }else{
+                    this.$store.state.wallet.ardrApi=api;
+                    this.$store.state.wallet.list.forEach(v => {
+                        if (v.txt != 'Nxt') {
+                            v.api = api;
+                        }
+                    });
+                }
+                 this.$store.commit('setWallet', this.$store.state.wallet);
             },
             addPeers(){
                 let _this=this;
                 this.$ons.notification.prompt({
                     'title': '提示',
-                    'message': '例：http://115.171.203.184:7876（只能是http）',
+                    'message': '例：http://115.171.203.184:7876）',
                     'callback': function (data) {
                         _this.peers.unshift({api:data,is:false})
-                        console.log(data);
                     }
                 });
             }
         },
         mounted: function () {
             let api = ''
-            this.$store.state.wallet.list.forEach(v => {
-                if (v.txt == 'Nxt') {
-                    api = v.api;
-                }
-            });
+            if(this.$store.state.pageText=='Nxt'){
+                this.$store.state.wallet.list.forEach(v => {
+                    if (v.txt == 'Nxt') {
+                        api = v.api;
+                    }
+                });
+            }else{
+                api=this.$store.state.wallet.ardrApi;
+            }
             this.peers = [];
             let bis=false;
             this.$http.get( api+'/nxt-proxy?requestType=getPeers&active=true&includePeerInfo=true').then(v => {
+                this.modalVisible=false;
                 if (v.status == 200) {
                     v.data.peers.forEach(item => {
                         if (item.state == 1 && item.apiPort != undefined) {
@@ -95,6 +114,8 @@
                         this.peers.unshift(model)
                     }
                 }
+            }).catch(error=>{
+                this.modalVisible=false;
             })
 
         }

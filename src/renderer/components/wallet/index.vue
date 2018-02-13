@@ -15,10 +15,10 @@
                     <div class="wallet_index_head_sum">
                         {{$store.state.sum}}
                     </div>
-                    <!--<div  v-if="$store.state.wallet.name" style="margin: 0 auto;margin-top: 14px;font-size: 12px;width: 94px;line-height: 20px;" @click="push(pages[0].page)">-->
-                        <!--<img src="../../assets/add.png" style="width: 20px;float: left"/>-->
-                        <!--Add Assets-->
-                    <!--</div>-->
+                    <div  v-if="$store.state.wallet.name" style="margin: 0 auto;margin-top: 14px;font-size: 12px;width: 94px;line-height: 20px;" @click="push(pages[0].page)">
+                        <img src="../../assets/add.png" style="width: 20px;float: left"/>
+                        添加资产
+                    </div>
                 </div>
             </v-ons-list>
             <v-ons-card class="wallet_index_list" v-for="item in $store.state.wallet.list">

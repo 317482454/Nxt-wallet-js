@@ -100,6 +100,10 @@
                                 formData.append("amountNQT", this.tx.count * 100000000);
                                 formData.append("feeNQT", this.tx.fees * 100000000);
                                 formData.append("deadline", 60);
+                                if(this.$store.state.pageText.model.chainId){
+                                    formData.append("chain", this.$store.state.pageText.model.chainId);
+
+                                }
                                 if(this.tx.message.trim()!=''){
                                     formData.append("message", this.tx.message);
                                     formData.append("messageIsText",true);
@@ -107,7 +111,11 @@
                                 this.alertDialog1Visible = true;
                                 this.$http.post(this.$store.state.pageText.model.api + '/nxt', formData).then(v => {
                                     if (v.status == 200) {
-                                        return this.$nxt.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext);
+                                        if(this.$store.state.pageText.model.chainId) {
+                                            return this.$ardor.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext);
+                                        }else{
+                                            return this.$nxt.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext);
+                                        }
                                     }
                                     else {
                                         this.alertDialog1Visible = false;

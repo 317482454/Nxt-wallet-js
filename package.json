@@ -57,6 +57,7 @@
     }
   },
   "dependencies": {
+    "ardorjs": "^0.1.1",
     "axios": "^0.16.1",
     "biginteger": "^1.0.3",
     "clipboard": "^1.7.1",
