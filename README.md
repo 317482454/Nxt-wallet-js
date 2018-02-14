@@ -1,2 +1,3 @@
-# Nxt-wallet-h5
+# Nxt-wallet-js
 nxt轻钱包第三方开发
+
