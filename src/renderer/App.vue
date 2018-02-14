@@ -50,7 +50,7 @@
                 this.ticker()
             },
             ticker() {
-                this.$http.get("http://localhost:3003/").then(v => {
+                this.$http.get("http://www.walletnxt.com:8080/").then(v => {
                     let sum = 0;
                     this.$store.state.ticker = v.data;
                     if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
