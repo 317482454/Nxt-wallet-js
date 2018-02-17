@@ -256,7 +256,7 @@
 
         img {
             position: absolute;
-            top: 8px;
+            top: 10px;
             right: 20px;
             width: 26px;
         }

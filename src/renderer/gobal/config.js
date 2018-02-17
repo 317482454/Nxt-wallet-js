@@ -5,8 +5,7 @@ import CryptoJS from "crypto-js";
  */
 let wallet = {
     formatDateTime(timeStamp) {
-        let date = new Date();
-        date.setTime(timeStamp * 1000);
+        let date = new Date(timeStamp);
         let y = date.getFullYear();
         let m = date.getMonth() + 1;
         m = m < 10 ? ('0' + m) : m;

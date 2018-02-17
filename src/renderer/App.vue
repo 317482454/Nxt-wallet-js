@@ -34,17 +34,15 @@
                     this.$store.state.wallet.list.forEach((v, k) => {
                         this.$g.wallet.getAccount(this, v).then(sum => {
                             if (sum == 'errorCode') {
-                                v.sum = 0;
                                 v.is = false;
-                                this.$store.commit('setWalletList2', model)
                             } else {
                                 v.sum = sum;
                                 v.is = true;
-                                this.$store.commit('setWalletList2', model)
                             }
                         })
                         model.push(v);
                     })
+                    this.$store.commit('setWalletList2',model)
 
                 }
                 this.ticker()

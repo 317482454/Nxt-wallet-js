@@ -4,7 +4,7 @@
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    节点设置
+                    {{this.$store.state.pageText}}节点设置
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>

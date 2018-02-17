@@ -76,7 +76,7 @@
                if(v.status==200){
                    for (let key in v.data.chains){
                        let t=false;
-                       let txt=this.titleCase(key);
+                       let txt=this.titleCase(key)=='Ardr'?'Ardor':this.titleCase(key);
                        this.$store.state.wallet.list.forEach(item=>{
                            if(txt==item.txt){
                                t=true;

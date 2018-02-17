@@ -67,7 +67,8 @@
             return{
                 list2:[],
                 state: 'initial',
-                modalVisible:true
+                modalVisible:true,
+                epochBeginning:0
             }
         },
         methods: {
@@ -75,7 +76,8 @@
                 this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText.model).then(sum=>{
                     this.modalVisible=false;
                     sum.forEach(v=>{
-                        v.time=this.$g.wallet.formatDateTime(v.blockTimestamp+1385294348);
+                        console.log(v);
+                        v.time=this.$g.wallet.formatDateTime(v.timestamp*1000+(this.epochBeginning - 500));
                         v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(2);
                         v.fee=(parseInt(v.feeNQT)*0.00000001).toFixed(2);
                         if(v.senderRS!=this.$store.state.pageText.model.address){
@@ -97,7 +99,10 @@
             }
         },
         mounted: function () {
-            this.load();
+            this.$http.get(this.$store.state.wallet.ardrApi+"/nxt?requestType=getConstants").then(v => {
+                this.epochBeginning=v.data.epochBeginning;
+                this.load();
+            });
         }
     }
 </script>

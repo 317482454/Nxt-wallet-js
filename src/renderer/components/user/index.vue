@@ -49,7 +49,7 @@
                                    cancelable
                                    title="修改节点选择">
                    <v-ons-action-sheet-button @click="peers('Nxt')"   icon="md-square-o">Nxt</v-ons-action-sheet-button>
-                   <v-ons-action-sheet-button @click="peers('Ardr')"  icon="md-square-o">Ardr</v-ons-action-sheet-button>
+                   <v-ons-action-sheet-button @click="peers('Ardor')"  icon="md-square-o">Ardor</v-ons-action-sheet-button>
 
                    <v-ons-action-sheet-button @click="actionSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
                </v-ons-action-sheet>
