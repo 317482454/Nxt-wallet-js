@@ -32,8 +32,11 @@
                     <img src="../../assets/yun.png" />节点
                 </v-ons-list-item>
             </v-ons-list>
-            <v-ons-list class="index_list" v-if="$store.state.wallet.name" style="margin-top: 10px;" @click="out">
-                <v-ons-list-item tappable modifier="chevron">
+            <v-ons-list class="index_list" v-if="$store.state.wallet.name" style="margin-top: 10px;">
+                <v-ons-list-item tappable modifier="chevron" @click="language">
+                    <img src="../../assets/language.png" />语言
+                </v-ons-list-item>
+                <v-ons-list-item tappable modifier="chevron"  @click="out">
                     <img src="../../assets/logOut.png" />删除钱包
                 </v-ons-list-item>
             </v-ons-list>
@@ -41,7 +44,7 @@
                         @click="actionSheetVisible=true"
                         style="margin-top: 10px;" >
                 <v-ons-list-item tappable modifier="chevron">
-                    <img src="../../assets/reward.png" />打赏作者
+                    <img src="../../assets/reward.png" />打赏作者{{$t('l.txt')}}
                 </v-ons-list-item>
             </v-ons-list>
            <section v-show="$store.state.wallet.name">
@@ -134,6 +137,9 @@
                 this.peersSheetVisible=false;
                 this.$store.commit('push', {page: this.pages[2].page,txt:txt});
 
+            },
+            language(){
+                this.$i18n.locale=this.$i18n.locale=='zh-CN'?'en-US':'zh-CN'
             }
         }
 

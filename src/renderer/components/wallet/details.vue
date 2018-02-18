@@ -100,7 +100,7 @@
         },
         mounted: function () {
             this.$http.get(this.$store.state.wallet.ardrApi+"/nxt?requestType=getConstants").then(v => {
-                this.epochBeginning=v.data.epochBeginning;
+                this.epochBeginning=v.data.epochBeginning
                 this.load();
             });
         }
