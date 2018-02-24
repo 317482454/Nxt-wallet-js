@@ -6,23 +6,23 @@
                 <div @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
                 </div>
-                创建钱包
+                {{$t('l.create.title')}}
             </div>
             <section v-show="is" class="create">
                 <v-ons-card>
-                    <input type="text" placeholder="钱包名称" v-model="user.name"/>
-                    <input type="password" placeholder="钱包密码" v-model="user.password"/>
-                    <input type="password" placeholder="再次输入钱包密码" v-model="passwordConfirm"/>
+                    <input type="text" :placeholder="$t('l.import.name')" v-model="user.name"/>
+                    <input type="password" :placeholder="$t('l.import.password')" v-model="user.password"/>
+                    <input type="password" :placeholder="$t('l.import.again')" v-model="passwordConfirm"/>
                 </v-ons-card>
                 <section class="section">
                     <ons-button class="button button--large" @click="save" modifier="large">
-                        创建
+                        {{$t('l.create.btn')}}
                     </ons-button>
                 </section>
             </section>
             <section v-show="!is">
                 <div class="copy_txt">
-                    助记词
+                    {{$t('l.create.phrase')}}
                 </div>
                 <div class="copy" :index="phrase">
                     {{phrase}}
@@ -31,10 +31,10 @@
                     <section class=" section">
                         <ons-button style="margin: 30px auto;position: relative;  overflow: initial;"
                                     class="button button--large copyAddr" :index="phrase" modifier="large">
-                            复制
+                            {{$t('l.copy.title')}}
                             <div v-show="copyShow" style="position: absolute;bottom: -70px;background: #000;opacity: 0.6;;color: #fff;height: 40px;
             width: 140px;font-size: 12px;line-height: 40px;border-radius: 5px;left: 50%;margin-left: -70px">
-                                复制成功
+                                {{$t('l.copy.txt')}}
                             </div>
                         </ons-button>
                     </section>
@@ -70,8 +70,8 @@
             save() {
                 if (this.user.password.length < 9) {
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '密码需要大于9位'
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.digits')
                     });
                     return;
                 }
@@ -82,8 +82,8 @@
                     this.is = false;
                 } else {
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '请输入全部信息'
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.information')
                     })
                 }
 

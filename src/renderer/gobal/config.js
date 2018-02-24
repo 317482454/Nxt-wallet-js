@@ -79,8 +79,8 @@ let wallet = {
         return new Promise(function (resolve) {
             vue.$ons.notification.prompt({
                 'inputType':'password',
-                'title': '提示',
-                'message': '请输入你的密码',
+                'title': vue.$t('l.prompt.title'),
+                'message': vue.$t('l.prompt.password'),
                 'callback': function (password) {
                     resolve(_this.decrypt(vue.$store.state.wallet.phrase, password))
                 }

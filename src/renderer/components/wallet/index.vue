@@ -10,14 +10,14 @@
                 <!--<img src="../../assets/background.png"/>-->
                 <div class="wallet_index_head_warp">
                     <div class="wallet_index_head_txt">
-                        总资产 (CNY)
+                        {{$t('l.wallet.title')}}
                     </div>
                     <div class="wallet_index_head_sum">
                         {{$store.state.sum}}
                     </div>
-                    <div  v-if="$store.state.wallet.name" style="margin: 0 auto;margin-top: 14px;font-size: 12px;width: 94px;line-height: 20px;" @click="push(pages[0].page)">
+                    <div  v-if="$store.state.wallet.name" style="margin: 0 auto;margin-top: 14px;font-size: 12px;width: 100px;line-height: 20px;" @click="push(pages[0].page)">
                         <img src="../../assets/add.png" style="width: 20px;float: left"/>
-                        添加资产
+                        {{$t('l.wallet.assets')}}
                     </div>
                 </div>
             </v-ons-list>
@@ -37,17 +37,17 @@
                     <div class="wallet_index_list_warp">
                         <div class="wallet_index_list_div wallet_index_list_div1" @click="push(pages[1].page,{model:item})">
                             <div style="width: 72px">
-                                <img src="../../assets/recieve.png" />接收
+                                <img src="../../assets/recieve.png" />{{$t('l.wallet.receive')}}
                             </div>
                         </div>
                         <div class="wallet_index_list_div wallet_index_list_div2" @click="push(pages[2].page, {model:item})">
                             <div style="width: 62px;">
-                                <img src="../../assets/send.png"/>发送
+                                <img src="../../assets/send.png"/>{{$t('l.wallet.send')}}
                             </div>
                         </div>
                         <div class="wallet_index_list_div wallet_index_list_div3" @click="push(pages[3].page, {model:item})">
-                            <div style="width: 54px;">
-                                <img src="../../assets/bill.png"/>明细
+                            <div style="width: 60px;">
+                                <img src="../../assets/bill.png"/>{{$t('l.wallet.details')}}
                             </div>
                         </div>
                     </div>
@@ -90,8 +90,6 @@
             }
         },
         created: function () {
-
-
         }
     };
 </script>

@@ -3,7 +3,7 @@
         <div class="zhs_head">
             <img src="../../assets/head.png" class="zhs_head"/>
             <div class="zhs_txt">
-                接收 {{$store.state.pageText.model.txt}}
+                {{$t('l.into.title')}} {{$store.state.pageText.model.txt}}
             </div>
             <div class="zhs_left" @click="$store.commit('pop')">
                 <img src="../../assets/left.png"/>
@@ -15,7 +15,7 @@
         </div>
         <v-ons-list class="addr">
             <v-ons-list-item modifier="nodivider ">
-                <div class="addr_txt">地址</div>
+                <div class="addr_txt">{{$t('l.into.addr')}} </div>
                 <div class=" addr_val">
                     {{$store.state.pageText.model.address}}
                 </div>
@@ -24,9 +24,9 @@
         </v-ons-list>
         <div class="addrCopy ">
             <ons-button class="button button--large copyBtn copy" :index="$store.state.pageText.model.address">
-                复制地址
+                {{$t('l.copy.title')}}{{$t('l.into.addr')}}
                 <div v-show="copyShow">
-                    复制成功
+                    {{$t('l.copy.txt')}}
                 </div>
             </ons-button>
         </div>

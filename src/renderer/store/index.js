@@ -9,7 +9,8 @@ export default new Vuex.Store({
         pageStack: [require('@/components/index').default],
         pageText:'',
         ticker:'',
-        sum:''
+        sum:'',
+        lang:''
     },
     mutations: {
         ['getWallet'] (state,password) {
@@ -32,6 +33,17 @@ export default new Vuex.Store({
         ['logOutWallet'](state){
             state.wallet={};
             localStorage.removeItem("wallet");
+        },
+        ['getLang'](state){
+            if(localStorage.getItem('lang')!=null){
+                state.lang=localStorage.getItem('lang');
+            }else{
+                state.lang=(navigator.systemLanguage?navigator.systemLanguage:navigator.language);
+            }
+        },
+        ['setLang'](state,txt){
+            state.lang=txt;
+            localStorage.setItem('lang',txt);
         },
         ['push'](state,data){
             state.pageText='';

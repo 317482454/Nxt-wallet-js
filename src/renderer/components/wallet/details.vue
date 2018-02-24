@@ -11,7 +11,7 @@
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    {{$store.state.pageText.model.txt}} 明细
+                    {{$store.state.pageText.model.txt}} {{$t('l.details.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
@@ -20,7 +20,7 @@
             <div class="details_List" v-for="item in list2">
                 <div class="details_List_sum">
                     <div>
-                        数量
+                        {{$t('l.details.quantity')}}
                     </div>
                     <div class="details_balance">
                         <!--10000.00-->
@@ -37,13 +37,13 @@
                 </div>
                 <div class="details_List_sum details_List_send">
                     <div v-if="!item.is" style="float: left">
-                        转出
+                        {{$t('l.details.out')}}
                     </div>
                     <div v-if="item.is" style="float: left">
-                        转入
+                        {{$t('l.details.into')}}
                     </div>
                     <div style="float: left;font-size: 12px;margin-left:10px ">
-                        手续费:{{item.fee}}
+                        {{$t('l.details.fee')}}:{{item.fee}}
                     </div>
                     <div style="float: right">
                         {{item.time}}
@@ -76,7 +76,6 @@
                 this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText.model).then(sum=>{
                     this.modalVisible=false;
                     sum.forEach(v=>{
-                        console.log(v);
                         v.time=this.$g.wallet.formatDateTime(v.timestamp*1000+(this.epochBeginning - 500));
                         v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(2);
                         v.fee=(parseInt(v.feeNQT)*0.00000001).toFixed(2);
@@ -99,7 +98,13 @@
             }
         },
         mounted: function () {
-            this.$http.get(this.$store.state.wallet.ardrApi+"/nxt?requestType=getConstants").then(v => {
+            let api=''
+            if(this.$store.state.pageText.model.txt=='Nxt'){
+                api=this.$store.state.pageText.model.api;
+            }else{
+                api=this.$store.state.wallet.ardrApi;
+            }
+            this.$http.get(api+"/nxt?requestType=getConstants").then(v => {
                 this.epochBeginning=v.data.epochBeginning
                 this.load();
             });

@@ -3,7 +3,7 @@
         <div class="zhs_head">
             <img src="../../assets/head.png" class="zhs_head"/>
             <div class="zhs_txt">
-                添加资产
+                {{$t('l.wallet.assets')}}
             </div>
             <div class="zhs_left" @click="$store.commit('pop')">
                 <img src="../../assets/left.png"/>

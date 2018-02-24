@@ -1,9 +1,10 @@
+<script src="../../../../../../Desktop/动画片/transactions.ts"></script>
 <template>
     <v-ons-page>
         <div class="zhs_head">
             <img src="../../assets/head.png" class="zhs_head"/>
             <div class="zhs_txt">
-                发送 {{$store.state.pageText.model.txt}}
+                {{$t('l.out.title')}} {{$store.state.pageText.model.txt}}
             </div>
             <div class="zhs_left" @click="$store.commit('pop')">
                 <img src="../../assets/left.png"/>
@@ -11,7 +12,7 @@
         </div>
         <v-ons-list class="out">
             <v-ons-list-item modifier="nodivider ">
-                <div class="out_div out_div_txt">可用余额</div>
+                <div class="out_div out_div_txt">{{$t('l.out.sum')}}</div>
                 <div class="out_div out_div_sum">
                     <span>{{$store.state.pageText.model.sum}}</span>
                 </div>
@@ -19,47 +20,47 @@
         </v-ons-list>
         <v-ons-list class="out">
             <v-ons-list-item modifier="nodivider ">
-                <div class="out_div out_div_txt">接收地址</div>
+                <div class="out_div out_div_txt">{{$t('l.out.to')}}</div>
                 <div class="out_div_input">
-                    <input v-model="tx.to" placeholder="请输入转账地址"/>
+                    <input v-model="tx.to" :placeholder="$t('l.out.please')+$t('l.out.to')"/>
                 </div>
                 <img v-if="$ons.platform.isWebView()" src="../../assets/scan.png" @click="scan"/>
             </v-ons-list-item>
         </v-ons-list>
         <v-ons-list class="out">
             <v-ons-list-item modifier="nodivider ">
-                <div class="out_div out_div_txt">转账数量</div>
+                <div class="out_div out_div_txt">{{$t('l.out.count')}}</div>
                 <div class="out_div_input">
-                    <input v-model="tx.count" placeholder="请输入转账数量"/>
+                    <input v-model="tx.count" :placeholder="$t('l.out.please')+$t('l.out.count')"/>
                 </div>
             </v-ons-list-item>
         </v-ons-list>
         <v-ons-list class="out">
             <v-ons-list-item modifier="nodivider ">
-                <div class="out_div out_div_txt">消息</div>
+                <div class="out_div out_div_txt">{{$t('l.out.message')}}</div>
                 <div class="out_div_input">
-                    <input v-model="tx.message" placeholder="请输入消息（可选）"/>
+                    <input v-model="tx.message" :placeholder="$t('l.out.please')+$t('l.out.message')"/>
                 </div>
             </v-ons-list-item>
         </v-ons-list>
         <v-ons-list class="out">
             <v-ons-list-item modifier="nodivider ">
-                <div class="out_div out_div_txt">矿工费</div>
+                <div class="out_div out_div_txt">{{$t('l.out.fees')}}</div>
                 <div class="out_div_input">
-                    <input v-model="tx.fees" placeholder="请输入矿工费"/>
+                    <input v-model="tx.fees" :placeholder="$t('l.out.please')+$t('l.out.fees')"/>
                 </div>
             </v-ons-list-item>
         </v-ons-list>
         <div style="margin: 20px 10px">
             <ons-button class="button button--large" style="background: #ed3554" @click="save" modifier="large">
-                确定发送
+                {{$t('l.out.btn')}}
             </ons-button>
         </div>
 
         <v-ons-dialog cancelable :visible.sync="alertDialog1Visible">
-            <p style="text-align: center">提示</p>
+            <p style="text-align: center">{{$t('l.prompt.title')}}</p>
             <p style="text-align: center;font-size: 14px">
-                正在发送...
+                {{$t('l.prompt.send')}}
             </p>
         </v-ons-dialog>
     </v-ons-page>
@@ -84,8 +85,8 @@
                 if ((parseFloat(this.tx.count)+parseFloat(this.tx.fees))>parseFloat(this.$store.state.pageText.model.sum)
                 ||(parseFloat(this.tx.count)+parseFloat(this.tx.fees))<1) {
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '请输入正确的金额'
+                        'title':  this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.amount')
                     })
                     return;
                 }
@@ -99,20 +100,31 @@
                                 formData.append("recipient", this.tx.to);
                                 formData.append("amountNQT", this.tx.count * 100000000);
                                 formData.append("feeNQT", this.tx.fees * 100000000);
-                                formData.append("deadline", 60);
                                 if(this.$store.state.pageText.model.chainId){
                                     formData.append("chain", this.$store.state.pageText.model.chainId);
+                                    formData.append("deadline", 15);
+                                }else{
+                                    formData.append("deadline", 60);
 
                                 }
                                 if(this.tx.message.trim()!=''){
                                     formData.append("message", this.tx.message);
-                                    formData.append("messageIsText",true);
+                                    if(this.$store.state.pageText.model.chainId){
+                                        formData.append("messageIsText",true);
+                                        formData.append("messageIsPrunable",true);
+                                        formData.append("referencedTransaction",'');
+
+                                    }
                                 }
                                 this.alertDialog1Visible = true;
                                 this.$http.post(this.$store.state.pageText.model.api + '/nxt', formData).then(v => {
                                     if (v.status == 200) {
                                         if(this.$store.state.pageText.model.chainId) {
-                                            return this.$ardor.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext);
+
+                                            return {
+                                                prunableAttachmentJSON:v.data.transactionJSON.attachment,
+                                                transactionBytes:this.$ardor.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext)
+                                            };
                                         }else{
                                             return this.$nxt.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext);
                                         }
@@ -120,20 +132,24 @@
                                     else {
                                         this.alertDialog1Visible = false;
                                         this.$ons.notification.alert({
-                                            'title': '提示',
-                                            'message': '发送失败'
+                                            'title': this.$t('l.prompt.title'),
+                                            'message':  this.$t('l.error.sent')
                                         })
                                     }
-                                }).then(signedBytes => {
+                                }).then(model => {
                                     let signed = new FormData();
                                     signed.append("requestType", "broadcastTransaction");
-                                    signed.append("transactionBytes", signedBytes);
+                                    signed.append("transactionBytes", model.transactionBytes);
+                                    if(this.$store.state.pageText.model.chainId) {
+                                        signed.append("prunableAttachmentJSON", JSON.stringify(model.prunableAttachmentJSON));
+                                    }
+                                    console.log(this.$store.state.pageText.model.api);
                                     this.$http.post(this.$store.state.pageText.model.api + '/nxt', signed).then(v => {
                                         this.alertDialog1Visible = false;
                                         let _this = this;
                                         this.$ons.notification.alert({
-                                            'title': '提示',
-                                            'message': '发送成功',
+                                            'title': this.$t('l.prompt.title'),
+                                            'message': this.$t('l.prompt.sent'),
                                             'callback': function () {
                                                 _this.$store.commit('pop');
                                             }
@@ -144,15 +160,15 @@
                         })
                         .catch(error => {
                             this.$ons.notification.alert({
-                                'title': '提示',
-                                'message': '发送失败'
+                                'title': this.$t('l.prompt.title'),
+                                'message': this.$t('l.error.sent')
                             })
                         })
                 }
                 else {
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '请输入正确的内容'
+                        'title':  this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.message')
                     })
                 }
 
@@ -251,7 +267,7 @@
         }
 
         .out_div_txt {
-            width: 60px
+            width: 72px
         }
 
         img {

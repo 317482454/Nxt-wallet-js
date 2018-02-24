@@ -17,14 +17,16 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 store.commit('getWallet')
+store.commit('getLang')
+
 Vue.prototype.md =false;
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
 const i18n=new VueI18n({
-    locale: 'zh-CN',    // 语言标识
+    locale: store.state.lang,    // 语言标识
     messages: {
         'zh-CN': require('./lang/zh'),   // 中文语言包
-        'en-US': require('./lang/en')    // 英文语言包
+        'en-US': require('./lang/en')    // 英文语言包x
     }
 })
 

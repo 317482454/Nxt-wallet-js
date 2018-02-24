@@ -4,12 +4,12 @@
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    {{this.$store.state.pageText}}节点设置
+                    {{this.$store.state.pageText}}{{$t('l.peers.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
                 </div>
-                <div @click="addPeers" class="zhs_right">添加节点</div>
+                <div @click="addPeers" class="zhs_right">{{$t('l.peers.add')}}</div>
             </div>
             <ons-list>
                 <ons-list-item v-for="(item,index) in peers" style="padding: 0 0 0 20px;">
@@ -66,10 +66,25 @@
             addPeers(){
                 let _this=this;
                 this.$ons.notification.prompt({
-                    'title': '提示',
-                    'message': '例：http://115.171.203.184:7876）',
+                    'title': this.$t('l.prompt.title'),
+                    'message': this.$t('l.peers.prompt'),
                     'callback': function (data) {
-                        _this.peers.unshift({api:data,is:false})
+                        _this.modalVisible=true;
+                        _this.$http.get( data+'/nxt?requestType=getBlockchainStatus',{timeout:3000}).then(v=>{
+                            if(v.status==200){
+                                console.log(v);
+                                if(v.data.services.toString().indexOf('CORS')!=-1&&v.data.services.toString().indexOf('API')!=-1){
+                                    _this.peers.unshift({api:data,is:false})
+                                }
+                            }
+                            _this.modalVisible=false;
+                        }).catch(error=>{
+                            _this.modalVisible=false;
+                            _this.$ons.notification.alert({
+                                'title': _this.$t('l.prompt.title'),
+                                'message': _this.$t('l.error.node'),
+                            })
+                        })
                     }
                 });
             }
@@ -91,7 +106,7 @@
                 this.modalVisible=false;
                 if (v.status == 200) {
                     v.data.peers.forEach(item => {
-                        if (item.state == 1 && item.apiPort != undefined) {
+                        if (item.state == 1 && item.apiPort != undefined&&item.services.toString().indexOf('CORS')!=-1&&item.services.toString().indexOf('API')!=-1) {
                             let api2 = 'http://' + item.address + ':' + item.apiPort;
                             let model={
                                 api:api2,

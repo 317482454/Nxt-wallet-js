@@ -34,6 +34,7 @@
                     this.$store.state.wallet.list.forEach((v, k) => {
                         this.$g.wallet.getAccount(this, v).then(sum => {
                             if (sum == 'errorCode') {
+                                v.sum=0;
                                 v.is = false;
                             } else {
                                 v.sum = sum;
@@ -55,7 +56,11 @@
                         this.$store.state.wallet.list.forEach(model => {
                             this.$store.state.ticker.forEach(item => {
                                 if (model.txt == item.ticker.name) {
-                                    sum = sum + parseFloat(item.ticker.price_cny).toFixed(2) * model.sum;
+                                    if(this.$store.state.lang=='zh-CN'){
+                                        sum = sum + parseFloat(item.ticker.price_cny).toFixed(2) * model.sum;
+                                    }else{
+                                        sum = sum + parseFloat(item.ticker.price_usd).toFixed(6) * model.sum;
+                                    }
                                 }
                             })
                         })
@@ -68,7 +73,7 @@
             this.list();
             setInterval(() => {
                 this.list();
-            }, 10000);
+            }, 3000);
         }
     }
 </script>
