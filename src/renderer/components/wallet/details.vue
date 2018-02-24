@@ -7,12 +7,11 @@
                         :rotate="state === 'preaction' && 180" :spin="state === 'action'"></v-ons-icon>
         </v-ons-pull-hook>
 
-
         <section >
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    {{$store.state.pageText.model.txt}} 明细
+                    {{$store.state.pageText.model.txt}} {{$t('l.details.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
@@ -21,7 +20,7 @@
             <div class="details_List" v-for="item in list2">
                 <div class="details_List_sum">
                     <div>
-                        数量
+                        {{$t('l.details.quantity')}}
                     </div>
                     <div class="details_balance">
                         <!--10000.00-->
@@ -38,13 +37,13 @@
                 </div>
                 <div class="details_List_sum details_List_send">
                     <div v-if="!item.is" style="float: left">
-                        转出
+                        {{$t('l.details.out')}}
                     </div>
                     <div v-if="item.is" style="float: left">
-                        转入
+                        {{$t('l.details.into')}}
                     </div>
                     <div style="float: left;font-size: 12px;margin-left:10px ">
-                        手续费:{{item.fee}}
+                        {{$t('l.details.fee')}}:{{item.fee}}
                     </div>
                     <div style="float: right">
                         {{item.time}}
@@ -54,6 +53,11 @@
             <div style="height: 60px;width: 100%">
             </div>
         </section>
+        <v-ons-modal :visible="modalVisible" >
+            <p style="text-align: center">
+                Loading <v-ons-icon icon="fa-spinner" spin></v-ons-icon>
+            </p>
+        </v-ons-modal>
     </v-ons-page>
 </template>
 
@@ -63,13 +67,16 @@
             return{
                 list2:[],
                 state: 'initial',
+                modalVisible:true,
+                epochBeginning:0
             }
         },
         methods: {
             load(){
                 this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText.model).then(sum=>{
+                    this.modalVisible=false;
                     sum.forEach(v=>{
-                        v.time=this.$g.wallet.formatDateTime(v.blockTimestamp+1385294348);
+                        v.time=this.$g.wallet.formatDateTime(v.timestamp*1000+(this.epochBeginning - 500));
                         v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(2);
                         v.fee=(parseInt(v.feeNQT)*0.00000001).toFixed(2);
                         if(v.senderRS!=this.$store.state.pageText.model.address){
@@ -79,6 +86,8 @@
                         }
                     })
                     this.list2=sum;
+                }).catch(error=>{
+                    this.modalVisible=false;
                 })
             },
             loadItem(done) {
@@ -89,7 +98,16 @@
             }
         },
         mounted: function () {
-            this.load();
+            let api=''
+            if(this.$store.state.pageText.model.txt=='Nxt'){
+                api=this.$store.state.pageText.model.api;
+            }else{
+                api=this.$store.state.wallet.ardrApi;
+            }
+            this.$http.get(api+"/nxt?requestType=getConstants").then(v => {
+                this.epochBeginning=v.data.epochBeginning
+                this.load();
+            });
         }
     }
 </script>

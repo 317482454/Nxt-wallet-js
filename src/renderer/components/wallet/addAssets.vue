@@ -1,14 +1,12 @@
 <template>
     <v-ons-page>
-        <div style="height: 60px;width: 100%;position: relative;text-align: center;line-height: 60px;color: #fff;font-size: 14px">
-            <img src="../../assets/head.png" style="width: 100%;height: 100%"/>
-            <div style="position: absolute;width: 100%;height: 100%;text-align: center;top: 0;">
-                Add Assets
+        <div class="zhs_head">
+            <img src="../../assets/head.png" class="zhs_head"/>
+            <div class="zhs_txt">
+                {{$t('l.wallet.assets')}}
             </div>
-            <div style="position: relative;position: absolute;width: 20%;height: 100%;top: 0;text-align: left"
-                 @click="$store.commit('pop')">
-                <img src="../../assets/left.png"
-                     style="position: absolute;   top: 50%;margin-top: -7.5px;width: 9px;margin-left: 20px;"/>
+            <div class="zhs_left" @click="$store.commit('pop')">
+                <img src="../../assets/left.png"/>
             </div>
         </div>
         <ons-list>
@@ -21,6 +19,11 @@
                 </div>
             </ons-list-item>
         </ons-list>
+        <v-ons-modal :visible="modalVisible" >
+            <p style="text-align: center">
+                Loading <v-ons-icon icon="fa-spinner" spin></v-ons-icon>
+            </p>
+        </v-ons-modal>
     </v-ons-page>
 </template>
 
@@ -29,49 +32,63 @@
         data() {
             return {
                 List: [
-                    {
-                        "txt": "Photon",
-                        "val": "photon"
-                    },
-                    {
-                        "txt": "Iris",
-                        "val": "iris"
-                    }
                 ],
-                model: ''
+                model: '',
+                modalVisible:true
             };
         },
         methods: {
             test(index) {
                 this.$nextTick(() => {
                     let wallet = this.$store.state.wallet.list;
-                    for(let i=0;i<wallet.length;i++){
-                        if(wallet[i].val==this.List[index].val&&!this.List[index].is){
-                            wallet.splice(i, 1);
-                            break;
-                        } else {
-                            if (this.List[index].is) {
-                                let model = JSON.parse(JSON.stringify(wallet[0]));
-                                model.txt = this.List[index].txt;
-                                model.val = this.List[index].val;
-                                model.sum=0;
-                                wallet.push(model)
-                                break;
+                    let model=JSON.parse(JSON.stringify(wallet[0]));
+                    model.address='ARDOR'+wallet[0].address.split('NXT')[1];
+                    model.chainId=this.List[index].id;
+                    model.txt=this.List[index].txt;
+                    model.api=this.$store.state.wallet.ardrApi;
+                    model.sum=0;
+                    if(this.List[index].is){
+                         wallet.push(model)
+                    }else{
+                        let spliceIndex=0
+                        wallet.forEach((key,index)=>{
+                            if(key.txt==model.txt){
+                                spliceIndex=index;
                             }
-                        }
+                        })
+                        wallet.splice(spliceIndex,1)
                     }
                     this.$store.commit('setWalletList2', wallet);
                 })
+            },
+            titleCase(str) {
+                let newarr,newarr1=[];
+                newarr = str . toLowerCase() . split(" ");
+                for(let i = 0 ; i < newarr . length ; i++){
+                    newarr1 . push(newarr[i][0] . toUpperCase()+newarr[i] . substring(1));
+                }
+                return newarr1.join(' ');
             }
         },
         created: function () {
-            let t=new Set();
-            this.$store.state.wallet.list.forEach((v)=>{
-                t.add(v["val"]);
+            this.$http.get(this.$store.state.wallet.ardrApi+"/nxt?requestType=getConstants&chain=1").then(v => {
+                this.modalVisible=false;
+               if(v.status==200){
+                   for (let key in v.data.chains){
+                       let t=false;
+                       let txt=this.titleCase(key)=='Ardr'?'Ardor':this.titleCase(key);
+                       this.$store.state.wallet.list.forEach(item=>{
+                           if(txt==item.txt){
+                               t=true;
+                           }
+                       })
+                       this.List.push({txt:txt,id:v.data.chains[key],is:t})
+                   }
+
+               }
+            }).catch(error=>{
+                this.modalVisible=false;
             })
-            for(let i=0;i<this.List.length;i++){
-                this.List[i].is=t.has(this.List[i]["val"]);
-            }
         }
     }
 </script>

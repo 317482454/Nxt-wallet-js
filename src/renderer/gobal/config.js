@@ -5,8 +5,7 @@ import CryptoJS from "crypto-js";
  */
 let wallet = {
     formatDateTime(timeStamp) {
-        let date = new Date();
-        date.setTime(timeStamp * 1000);
+        let date = new Date(timeStamp);
         let y = date.getFullYear();
         let m = date.getMonth() + 1;
         m = m < 10 ? ('0' + m) : m;
@@ -25,6 +24,7 @@ let wallet = {
         let wallet = {
             name: name,
             phrase: this.encrypt(phrase, pass),
+            ardrApi:'http://62.75.159.113:27876',
             list: [
                 {
                     phrase: this.encrypt(phrase, pass),
@@ -43,7 +43,10 @@ let wallet = {
             let api = model.api;
             if (model.txt == 'Nxt') {
                 api = api + '/nxt?requestType=getAccount&account=' + model.address;
+            }else{
+                api = api + '/nxt?requestType=getBalance&account=' + model.address+'&chain='+model.chainId;
             }
+
             vue.$http.get(api).then(v => {
 
                 if (v.status == 200 && v.data) {
@@ -61,6 +64,8 @@ let wallet = {
             let api = model.api;
             if (model.txt == 'Nxt') {
                 api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address;
+            }else{
+                api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address+'&chain='+model.chainId;
             }
             vue.$http.get(api).then(v => {
                 if (v.status == 200 && v.data) {
@@ -74,8 +79,8 @@ let wallet = {
         return new Promise(function (resolve) {
             vue.$ons.notification.prompt({
                 'inputType':'password',
-                'title': '提示',
-                'message': '请输入你的密码',
+                'title': vue.$t('l.prompt.title'),
+                'message': vue.$t('l.prompt.password'),
                 'callback': function (password) {
                     resolve(_this.decrypt(vue.$store.state.wallet.phrase, password))
                 }

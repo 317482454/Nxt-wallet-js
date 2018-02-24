@@ -9,12 +9,12 @@
             <div class="zhs_head" >
                 <!--<img src="../../assets/head.png" class="zhs_head"/>-->
                 <div class="zhs_txt">
-                   行情
+                    {{$t('l.market.title')}}
                 </div>
             </div>
             <div v-for="(item,index) in $store.state.ticker" class="details_List">
                 <div class="title">
-                    {{item.ticker.text}}（排名：{{item.ticker.rank}}）
+                    {{item.ticker.text}}（{{$t('l.market.rank')}}：{{item.ticker.rank}}）
                 </div>
                 <div class="warp">
                     {{item.ticker.name}}
@@ -26,12 +26,18 @@
                          v-show="item.ticker.percent_change_24h.toString().indexOf('-')!=-1">
                          {{item.ticker.percent_change_24h}}%
                     </div>
-                    <div class="price">
+                    <div class="price" v-show="$i18n.locale=='zh-CN'">
                         {{parseFloat(item.ticker.price_cny).toFixed(2)}} CNY
                     </div>
+                    <div class="price" v-show="$i18n.locale!='zh-CN'">
+                        {{parseFloat(item.ticker.price_usd).toFixed(6)}} USD
+                    </div>
                 </div>
-                <div class="volume">
-                    量 {{item.ticker['24h_volume_cny']}} CNY (24h)
+                <div class="volume" v-show="$i18n.locale=='zh-CN'">
+                    {{$t('l.market.amount')}} {{item.ticker['24h_volume_cny']}} CNY (24h)
+                </div>
+                <div class="volume" v-show="$i18n.locale!='zh-CN'">
+                    {{$t('l.market.amount')}} {{item.ticker['24h_volume_usd']}} USD (24h)
                 </div>
             </div>
             <div style="height: 60px;width: 100%">

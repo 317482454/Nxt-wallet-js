@@ -6,17 +6,17 @@
                 <div @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
                 </div>
-                导入钱包
+                {{$t('l.import.title')}}
             </div>
             <v-ons-card>
-                <input type="text" placeholder="钱包名称" v-model="user.name"/>
-                <input type="password" placeholder="钱包密码" v-model="user.password"/>
-                <input type="password" placeholder="再次输入钱包密码" v-model="passwordConfirm"/>
-                <input type="text" placeholder="助记词" v-model="user.phrase"/>
+                <input type="text" :placeholder="$t('l.import.name')" v-model="user.name"/>
+                <input type="password" :placeholder="$t('l.import.password')" v-model="user.password"/>
+                <input type="password" :placeholder="$t('l.import.again')" v-model="passwordConfirm"/>
+                <input type="text" :placeholder="$t('l.import.phrase')" v-model="user.phrase"/>
             </v-ons-card>
             <section class="section">
                 <ons-button class="button button--large button" @click="save" modifier="large">
-                    导入
+                    {{$t('l.import.btn')}}
                 </ons-button>
             </section>
         </div>
@@ -41,22 +41,22 @@
             save() {
                 if (this.user.password.length < 9) {
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '密码不能少于9位'
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.digits')
                     });
                     return;
                 }
                 if (this.user.name != '' && this.user.password != '' && this.user.phrase != '' && this.passwordConfirm == this.user.password) {
                     this.$g.wallet.setWallet(this.user.name, this.user.password, this.user.phrase, 'Nxt', this);
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '导入成功'
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.prompt.import')
                     })
                     this.$store.commit('pop')
                 } else {
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '请输入全部信息'
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.information')
                     })
                 }
 

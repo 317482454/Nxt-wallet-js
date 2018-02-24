@@ -29,37 +29,42 @@
         name: 'app',
         methods: {
             list() {
-                if (this.$store.state.wallet.list) {
+                if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
                     let model = [];
                     this.$store.state.wallet.list.forEach((v, k) => {
                         this.$g.wallet.getAccount(this, v).then(sum => {
                             if (sum == 'errorCode') {
-                                v.sum = 0;
+                                v.sum=0;
                                 v.is = false;
-                                this.$store.commit('setWalletList2', model)
                             } else {
                                 v.sum = sum;
                                 v.is = true;
-                                this.$store.commit('setWalletList2', model)
                             }
                         })
                         model.push(v);
                     })
+                    this.$store.commit('setWalletList2',model)
 
                 }
                 this.ticker()
             },
             ticker() {
-                this.$http.get("http://97.64.126.168:3003/").then(v => {
+                this.$http.get("http://www.walletnxt.com:8080/").then(v => {
                     let sum = 0;
                     this.$store.state.ticker = v.data;
-                    this.$store.state.wallet.list.forEach(model => {
-                        this.$store.state.ticker.forEach(item => {
-                            if (model.txt == item.ticker.name) {
-                                sum = sum + parseFloat(item.ticker.price_cny).toFixed(2) * model.sum;
-                            }
+                    if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
+                        this.$store.state.wallet.list.forEach(model => {
+                            this.$store.state.ticker.forEach(item => {
+                                if (model.txt == item.ticker.name) {
+                                    if(this.$store.state.lang=='zh-CN'){
+                                        sum = sum + parseFloat(item.ticker.price_cny).toFixed(2) * model.sum;
+                                    }else{
+                                        sum = sum + parseFloat(item.ticker.price_usd).toFixed(6) * model.sum;
+                                    }
+                                }
+                            })
                         })
-                    })
+                    }
                     this.$store.state.sum = sum.toFixed(2);
                 })
             }
@@ -68,7 +73,7 @@
             this.list();
             setInterval(() => {
                 this.list();
-            }, 1000);
+            }, 3000);
         }
     }
 </script>
