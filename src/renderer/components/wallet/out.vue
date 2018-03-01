@@ -139,11 +139,13 @@
                                 }).then(model => {
                                     let signed = new FormData();
                                     signed.append("requestType", "broadcastTransaction");
-                                    signed.append("transactionBytes", model.transactionBytes);
+
                                     if(this.$store.state.pageText.model.chainId) {
+                                        signed.append("transactionBytes", model.transactionBytes);
                                         signed.append("prunableAttachmentJSON", JSON.stringify(model.prunableAttachmentJSON));
+                                    }else{
+                                        signed.append("transactionBytes", model);
                                     }
-                                    console.log(this.$store.state.pageText.model.api);
                                     this.$http.post(this.$store.state.pageText.model.api + '/nxt', signed).then(v => {
                                         this.alertDialog1Visible = false;
                                         let _this = this;
@@ -154,6 +156,16 @@
                                                 _this.$store.commit('pop');
                                             }
                                         })
+                                    }).catch(error => {
+                                        this.$ons.notification.alert({
+                                            'title': this.$t('l.prompt.title'),
+                                            'message': this.$t('l.error.sent')
+                                        })
+                                    })
+                                }) .catch(error => {
+                                    this.$ons.notification.alert({
+                                        'title': this.$t('l.prompt.title'),
+                                        'message': this.$t('l.error.sent')
                                     })
                                 })
                             }
