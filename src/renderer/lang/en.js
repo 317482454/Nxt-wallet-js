@@ -107,6 +107,16 @@ export const l = {
         }
 
     },
+    transactionDetails:{
+        title:'Transaction Record',
+        sender:'Sender',
+        recipient:'Recipient',
+        fee:'Fee',
+        note:'Note',
+        ecBlock:'Transaction block',
+        time:'Transaction time',
+        confirm:'Confirm'
+    },
     copy:{
         title:'Copy',
         txt:'Copy success',

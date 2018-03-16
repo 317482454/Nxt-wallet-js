@@ -106,6 +106,16 @@ export const l = {
         }
 
     },
+    transactionDetails:{
+        title:'交易记录',
+        sender:'发款方',
+        recipient:'收款方',
+        fee:'手续费',
+        note:'备注',
+        ecBlock:'交易区块',
+        time:'交易时间',
+        confirm:'确定'
+    },
     copy:{
       title:'复制',
       txt:'复制成功',
