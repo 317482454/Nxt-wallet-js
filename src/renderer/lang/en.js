@@ -75,7 +75,7 @@ export const l = {
         sum:'Balance',
         to:'Address',
         count:'Count',
-        message:'Message(optional)',
+        message:'Message',
         fees:'Fee',
         please:'Please enter',
         btn:'Send'
