@@ -21,12 +21,32 @@
             <img src="./assets/ding_selected.png" id="ding_selected"
                  style="display:none;position: absolute;width: 50px;top: 50%;margin-top:120px;left: 50%;margin-left: -25px;"/>
         </div>
+        <v-ons-alert-dialog modifier="rowfooter" :visible.sync="alertDialog1Visible">
+            <span slot="title">{{$t('l.versionAlert.title')}} {{model.version}}</span>
+            <div class="alertDiv" v-for="item in model.txt">
+                {{item}}
+            </div>
+            <template slot="footer">
+                <v-ons-alert-dialog-button @click="alertDialog1Visible = false">
+                    {{$t('l.versionAlert.footer[0]')}}
+                </v-ons-alert-dialog-button>
+                <v-ons-alert-dialog-button  @click="open">
+                    {{$t('l.versionAlert.footer[1]')}}
+                </v-ons-alert-dialog-button>
+            </template>
+        </v-ons-alert-dialog>
     </div>
 </template>
 
 <script>
     export default {
         name: 'app',
+        data(){
+            return{
+                alertDialog1Visible:false,
+                model:{},
+            }
+        },
         methods: {
             list() {
                 if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
@@ -49,16 +69,19 @@
                 this.ticker()
             },
             ticker() {
-                this.$http.get("http://www.walletnxt.com:8080/").then(v => {
+                this.$http.get(this.$store.state.url).then(v => {
                     let sum = 0;
                     this.$store.state.ticker = v.data;
                     if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
                         this.$store.state.wallet.list.forEach(model => {
+                            model.price=0;
                             this.$store.state.ticker.forEach(item => {
                                 if (model.txt == item.ticker.name) {
                                     if(this.$store.state.lang=='zh-CN'){
+                                        model.price=(parseFloat(item.ticker.price_cny).toFixed(2) * model.sum).toFixed(2);
                                         sum = sum + parseFloat(item.ticker.price_cny).toFixed(2) * model.sum;
                                     }else{
+                                        model.price=(parseFloat(item.ticker.price_usd).toFixed(6) * model.sum).toFixed(4);
                                         sum = sum + parseFloat(item.ticker.price_usd).toFixed(6) * model.sum;
                                     }
                                 }
@@ -67,13 +90,37 @@
                     }
                     this.$store.state.sum = sum.toFixed(2);
                 })
+            },
+            open(){
+                window.open('http://www.walletnxt.com/');
+            },
+            update(t){
+                this.$http.get(this.$store.state.url+'log').then(v => {
+                    if (this.$store.state.version!=v.data.log[0].model.version){
+                        this.alertDialog1Visible=true;
+                        this.model.version=v.data.log[0].model.version;
+                        if(this.$store.state.lang=='zh-CN'){
+                            this.model.txt=v.data.log[0].model.zh
+                        }else{
+                            this.model.txt=v.data.log[0].model.en
+                        }
+                    }else{
+                        if(t==1){
+                            this.$ons.notification.alert({
+                                'title': this.$t('l.prompt.title'),
+                                'message':this.$t('l.prompt.version')
+                            })
+                        }
+                    }
+                })
             }
         },
         created: function () {
             this.list();
-            setInterval(() => {
-                this.list();
-            }, 3000);
+            // setInterval(() => {
+            //     this.list();
+            // }, 3000);
+           this.update()
         }
     }
 </script>

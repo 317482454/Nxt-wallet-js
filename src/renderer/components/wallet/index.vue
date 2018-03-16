@@ -16,7 +16,7 @@
                         {{$store.state.sum}}
                     </div>
                     <div  v-if="$store.state.wallet.name" style="margin: 0 auto;margin-top: 14px;font-size: 12px;width: 100px;line-height: 20px;" @click="push(pages[0].page)">
-                        <img src="../../assets/add.png" style="width: 20px;float: left"/>
+                        <img src="../../assets/add.png" style="height: 20px;width: 20px;float: left"/>
                         {{$t('l.wallet.assets')}}
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                         {{item.txt}}
                     </div>
                     <div class="wallet_index_list_sum">
-                        {{item.sum}}
+                        {{item.sum}}<span class="wallet_index_list_price">（≈{{item.price}} {{$t('l.wallet.price')}}）</span>
                     </div>
                     <div class="wallet_index_list_frizen">
                         {{item.address}}
@@ -39,13 +39,17 @@
                             <div style="width: 72px">
                                 <img src="../../assets/recieve.png" />{{$t('l.wallet.receive')}}
                             </div>
+                            <div class="divfff"></div>
+                            <div class="dive2"></div>
                         </div>
                         <div class="wallet_index_list_div wallet_index_list_div2" @click="push(pages[2].page, {model:item})">
                             <div style="width: 62px;">
                                 <img src="../../assets/send.png"/>{{$t('l.wallet.send')}}
                             </div>
+                            <div class="divfff"></div>
+                            <div class="dive2"></div>
                         </div>
-                        <div class="wallet_index_list_div wallet_index_list_div3" @click="push(pages[3].page, {model:item})">
+                        <div class="wallet_index_list_div wallet_index_list_div3" @click="push(pages[3].page, item)">
                             <div style="width: 60px;">
                                 <img src="../../assets/bill.png"/>{{$t('l.wallet.details')}}
                             </div>
@@ -74,12 +78,16 @@
                     {
                         page: require('@/components/wallet/details').default
                     }
+                    // {
+                    //     page: require('@/components/wallet/transactionDetails').default
+                    // }
                 ],
                 state: 'initial',
             };
         },
         methods: {
             push(page, txt) {
+                if (txt&&txt.model) txt.model.to = ''
                 this.$store.commit('push', {page: page, txt: txt});
             },
             loadItem(done) {
@@ -176,6 +184,10 @@
                     color: #000000;
                     font-size: 20px
                 }
+                .wallet_index_list_price {
+                    color: #bdbdbd;
+                    font-size: 12px
+                }
                 .wallet_index_list_frizen {
                     margin-top: 16px;
                     color: #bdbdbd;
@@ -200,6 +212,7 @@
                         width: 33%;
                         text-align: center;
                         font-size: 12px;
+                        position: relative;
                         div {
                             margin: 0 auto;
                         }
@@ -210,14 +223,11 @@
                             margin-right: 6px;
                         }
                     }
-                    .wallet_index_list_div1{
-                        border-right: 1px solid #ffffff;
+                    .divfff{
+                        top: 0px;right: 0;position: absolute;height: 100%;width: 1px;background: #fff;
                     }
-                    .wallet_index_list_div2 {
-                        border-right: 1px solid #e2e2e2;
-                    }
-                    .wallet_index_list_div3 {
-                        border-left: 1px solid #ffffff;
+                    .dive2{
+                        top: 0px;right: -1px;position: absolute;height: 100%;;width: 1px;background: #e2e2e2
                     }
                 }
             }

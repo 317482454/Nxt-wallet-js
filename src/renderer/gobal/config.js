@@ -41,7 +41,7 @@ let wallet = {
     getAccount(vue, model) {
         return new Promise(function (resolve) {
             let api = model.api;
-            if (model.txt == 'Nxt') {
+            if (!model.chainId) {
                 api = api + '/nxt?requestType=getAccount&account=' + model.address;
             }else{
                 api = api + '/nxt?requestType=getBalance&account=' + model.address+'&chain='+model.chainId;
@@ -60,16 +60,37 @@ let wallet = {
         });
     },
     getBlockchainTransactions(vue, model) {
+        let _this=this;
         return new Promise(function (resolve) {
             let api = model.api;
-            if (model.txt == 'Nxt') {
+            if (!model.chainId) {
                 api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address;
             }else{
                 api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address+'&chain='+model.chainId;
             }
+            console.log('222');
+            _this.getUnconfirmedTransactions(vue, model).then(list=>{
+                console.log(list);
+                vue.$http.get(api).then(v => {
+                    if (v.status == 200 && v.data) {
+                        resolve(list.concat(v.data.transactions))
+                    }
+                })
+            })
+
+        });
+    },
+    getUnconfirmedTransactions(vue, model){
+        return new Promise(function (resolve) {
+            let api = model.api;
+            if (!model.chainId) {
+                api = api + '/nxt?requestType=getUnconfirmedTransactions&account=' + model.address;
+            }else{
+                api = api + '/nxt?requestType=getUnconfirmedTransactions&account=' + model.address+'&chain='+model.chainId;
+            }
             vue.$http.get(api).then(v => {
                 if (v.status == 200 && v.data) {
-                    resolve(v.data.transactions)
+                    resolve(v.data.unconfirmedTransactions)
                 }
             })
         });

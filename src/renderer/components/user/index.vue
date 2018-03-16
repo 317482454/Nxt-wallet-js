@@ -25,6 +25,9 @@
             </v-ons-list>
 
             <v-ons-list class="index_list" v-if="$store.state.wallet.name"  style="margin-top: 10px;" >
+                <v-ons-list-item @click="push(contacts)" tappable modifier="chevron" >
+                    <img src="../../assets/contacts.png" />{{$t('l.profile.contact')}}
+                </v-ons-list-item>
                 <v-ons-list-item tappable modifier="chevron" @click="push(pages[3].page)">
                     <img src="../../assets/Phrase.png" />{{$t('l.profile.phrase')}}
                 </v-ons-list-item>
@@ -40,16 +43,14 @@
                     <img src="../../assets/logOut.png" />{{$t('l.profile.delete')}}
                 </v-ons-list-item>
             </v-ons-list>
-            <v-ons-list class="index_list" v-if="$store.state.wallet.name"
+            <v-ons-list class="index_list"
                         style="margin-top: 10px;" >
-                <v-ons-list-item tappable modifier="chevron"  @click="actionSheetVisible=true">
+                <v-ons-list-item tappable modifier="chevron"  v-if="$store.state.wallet.name"  @click="actionSheetVisible=true">
                     <img src="../../assets/reward.png" />{{$t('l.profile.reward')}}
                 </v-ons-list-item>
-                <a target="_blank" href="https://github.com/317482454/Nxt-wallet-js/issues">
-                    <v-ons-list-item tappable modifier="chevron">
-                          <img src="../../assets/fk.png" />{{$t('l.profile.feedback')}}
-                    </v-ons-list-item>
-                </a>
+                <v-ons-list-item @click="push(about)" tappable modifier="chevron">
+                    <img src="../../assets/fk.png" />{{$t('l.profile.about')}}
+                </v-ons-list-item>
             </v-ons-list>
            <section v-show="$store.state.wallet.name">
                <v-ons-action-sheet :visible.sync="peersSheetVisible"
@@ -100,6 +101,8 @@
                         page: require('@/components/wallet/out').default
                     }
                 ],
+                about: require('@/components/user/about').default,
+                contacts:require('@/components/contacts/contactsIndex').default,
                 languageList:[
                     {
                         txt:'中文',
@@ -120,7 +123,7 @@
         },
         methods: {
             push(page) {
-                this.$store.commit('push', {page: page});
+                this.$store.commit('push', {page: page,txt: ''});
             },
             pass() {
                 this.$g.wallet.getWallet(this).then(pass => {
@@ -151,10 +154,7 @@
             },
             rewar(item){
                 this.actionSheetVisible=false;
-                let addr='NXT-X949-FWSQ-BQFD-7B5PQ'
-                if(item.txt!='Nxt'){
-                    addr='ARDOR-X949-FWSQ-BQFD-7B5PQ'
-                }
+                let addr=item.txt.toLocaleUpperCase()+'-X949-FWSQ-BQFD-7B5PQ'
                 this.$store.commit('push', {page: this.pages[4].page,txt:{model:item,to:addr}});
             },
             peers(txt){

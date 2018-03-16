@@ -8,7 +8,7 @@
             <div class="zhs_left" @click="$store.commit('pop')">
                 <img src="../../assets/left.png"/>
             </div>
-            <div class="copy zhs_right" v-show="!$store.state.pageText.model.is" :index="$store.state.pageText.model.publickey">公钥</div>
+            <div class="copy zhs_right" :index="$store.state.pageText.model.publickey">公钥</div>
         </div>
         <div class="imgSrc">
             <img id="imgSrc"/>

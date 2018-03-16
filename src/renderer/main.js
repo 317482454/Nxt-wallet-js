@@ -34,6 +34,7 @@ import "babel-polyfill";
 // import eruda from  'eruda'
 // eruda.init()
 
+
 /* eslint-disable no-new */
 new Vue({
     components: { App },

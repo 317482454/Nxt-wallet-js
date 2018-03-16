@@ -16,6 +16,7 @@
             return {
                 activeIndex: 2,
                 position: 'bottom',
+
                 tabs: [
                     {
                         icon: 'ion-market',
@@ -39,6 +40,7 @@
             }
         },
         methods: {
+
             md() {
                 return this.$ons.platform.isAndroid()
             },
@@ -55,11 +57,15 @@
             if (this.$store.state.wallet.name) {
                 this.activeIndex = 1;
             }
+
         }
     }
 </script>
 
 <style lang='less'>
+    .alertDiv{
+        margin-left: 20px;text-align: left;
+    }
     .tabbar__item {
         .ion-market {
             background: url("../assets/market.png");

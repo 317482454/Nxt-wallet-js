@@ -1,7 +1,7 @@
 <template>
     <v-ons-page>
         <section>
-            <div class="zhs_head">
+            <div class="zhs_head" style="position: fixed;top: 0;z-index: 10" >
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
                     {{this.$store.state.pageText}}{{$t('l.peers.title')}}
@@ -11,7 +11,7 @@
                 </div>
                 <div @click="addPeers" class="zhs_right">{{$t('l.peers.add')}}</div>
             </div>
-            <ons-list>
+            <ons-list style="margin-top: 60px">
                 <ons-list-item v-for="(item,index) in peers" style="padding: 0 0 0 20px;">
                     <label class="center" style="padding: 14px 6px 14px 0;">
                         {{item.api}}
