@@ -22,7 +22,7 @@
                     <v-ons-list-item style="position: relative">
                         <v-ons-input v-model="model.addr" class="input" :placeholder="$t('l.contacts.create.addr')">
                         </v-ons-input>
-                        <img v-if="$ons.platform.isWebView()" style="position: absolute;top: 10px;width: 36px;right: 10px;"   src="../../assets/scan2.png" />
+                        <img @click="scan" v-if="$ons.platform.isWebView()" style="position: absolute;top: 10px;width: 36px;right: 10px;"   src="../../assets/scan2.png" />
                     </v-ons-list-item>
                     <v-ons-list-item>
                         <v-ons-input v-model="model.note"  class="input" :placeholder="$t('l.contacts.create.note')">
