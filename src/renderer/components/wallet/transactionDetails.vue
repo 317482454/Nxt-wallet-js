@@ -4,7 +4,7 @@
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    {{$store.state.pageText.txt}}交易记录
+                    {{$store.state.pageText.txt}}{{$t('l.transactionDetails.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
@@ -14,25 +14,25 @@
                 {{$store.state.pageText.item.sum}} <span>{{$store.state.pageText.txt}}</span>
             </div>
             <div class="transaction_title">
-                发款方
+                {{$t('l.transactionDetails.sender')}}
             </div>
             <div class="transaction_txt">
                 {{$store.state.pageText.item.senderRS}}
             </div>
             <div class="transaction_title">
-                收款方
+                {{$t('l.transactionDetails.recipient')}}
             </div>
             <div class="transaction_txt">
                 {{$store.state.pageText.item.recipientRS}}
             </div>
             <div class="transaction_title">
-                手续费
+                {{$t('l.transactionDetails.fee')}}
             </div>
             <div class="transaction_txt">
                 {{$store.state.pageText.item.fee}} {{$store.state.pageText.txt}}
             </div>
             <div class="transaction_title">
-                备注
+                {{$t('l.transactionDetails.note')}}
             </div>
             <div class="transaction_msg">
                 <span v-if="$store.state.pageText.item.attachment.message">
@@ -42,19 +42,19 @@
                 <span v-if="message!=''" v-html="message"></span>
             </div>
             <div class="transaction_title">
-                交易区块
+                {{$t('l.transactionDetails.ecBlock')}}
             </div>
             <div class="transaction_txt1">
                 {{$store.state.pageText.item.ecBlockId}}
             </div>
             <div class="transaction_title">
-                交易时间
+                {{$t('l.transactionDetails.time')}}
             </div>
             <div class="transaction_txt1">
                 {{$store.state.pageText.item.time}}
             </div>
             <div class="transaction_title">
-                确定
+                {{$t('l.transactionDetails.confirm')}}
             </div>
             <div class="transaction_txt1">
                {{$store.state.pageText.item.confirmations}}
