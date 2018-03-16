@@ -10,7 +10,9 @@ export default new Vuex.Store({
         pageText:'',
         ticker:'',
         sum:'',
-        lang:''
+        lang:'',
+        url:'http://www.walletnxt.com:8080/',
+        version:'1.0.1'
     },
     mutations: {
         ['getWallet'] (state,password) {
@@ -46,7 +48,6 @@ export default new Vuex.Store({
             localStorage.setItem('lang',txt);
         },
         ['push'](state,data){
-            state.pageText='';
             if(data.txt){
                 state.pageText=data.txt
             }

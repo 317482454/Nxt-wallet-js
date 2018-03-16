@@ -11,13 +11,13 @@
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    {{$store.state.pageText.model.txt}} {{$t('l.details.title')}}
+                    {{$store.state.pageText.txt}} {{$t('l.details.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
                 </div>
             </div>
-            <div class="details_List" v-for="item in list2">
+            <div class="details_List" v-for="item in list2" @click="push(item)">
                 <div class="details_List_sum">
                     <div>
                         {{$t('l.details.quantity')}}
@@ -68,24 +68,30 @@
                 list2:[],
                 state: 'initial',
                 modalVisible:true,
-                epochBeginning:0
+                epochBeginning:0,
+                transactionDetails:require('@/components/wallet/transactionDetails').default
             }
         },
         methods: {
+            push(item) {
+                this.$store.state.pageText.item=item;
+                this.$store.commit('push', {page: this.transactionDetails, txt: this.$store.state.pageText});
+            },
             load(){
-                this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText.model).then(sum=>{
+                this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText).then(sum=>{
                     this.modalVisible=false;
                     sum.forEach(v=>{
                         v.time=this.$g.wallet.formatDateTime(v.timestamp*1000+(this.epochBeginning - 500));
                         v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(2);
                         v.fee=(parseInt(v.feeNQT)*0.00000001).toFixed(2);
-                        if(v.senderRS!=this.$store.state.pageText.model.address){
+                        if(v.senderRS!=this.$store.state.pageText.address){
                             v.is=true
                         }else{
                             v.is=false;
                         }
+                        this.list2.push(v);
                     })
-                    this.list2=sum;
+
                 }).catch(error=>{
                     this.modalVisible=false;
                 })
@@ -99,8 +105,8 @@
         },
         mounted: function () {
             let api=''
-            if(this.$store.state.pageText.model.txt=='Nxt'){
-                api=this.$store.state.pageText.model.api;
+            if(this.$store.state.pageText.txt=='Nxt'){
+                api=this.$store.state.pageText.api;
             }else{
                 api=this.$store.state.wallet.ardrApi;
             }

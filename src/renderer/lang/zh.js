@@ -8,14 +8,29 @@ export const l = {
         language:'语言',
         delete:'删除钱包',
         reward:'打赏作者',
-        feedback:'意见反馈'
+        about:'关于我们',
+        contact:'联系人'
+    },
+    versionAlert:{
+        title:'发现新版本',
+        footer:[
+            '以后再说',
+            '立即更新'
+        ]
+    },
+    about:{
+        application:'应用版本',
+        feedback:'意见反馈',
+        version:'版本日志',
+        new:'检查新版本'
     },
     wallet:{
         title:'总资产 (CNY)',
         assets:'添加资产',
         receive:'接收',
         send:'发送',
-        details:'明细'
+        details:'明细',
+        price:'CNY'
     },
     import:{
         title:'导入钱包',
@@ -69,6 +84,28 @@ export const l = {
         rank:'排行',
         amount:'量'
     },
+    contacts:{
+        index:{
+            note:'备注',
+            payment:'确定支付',
+            modify:'修改联系人',
+            delete:'删除联系人',
+            cancel:'取消',
+            del:'确定删除用户:'
+        },
+        create:{
+            title:'新建',
+            txt:'确定',
+            name:'姓名',
+            addr:'钱包地址',
+            note:'备注',
+            add:'添加联系人成功'
+        },
+        update:{
+            title:'修改'
+        }
+
+    },
     copy:{
       title:'复制',
       txt:'复制成功',
@@ -78,7 +115,8 @@ export const l = {
         password:'请输入你的密码',
         import:'导入成功',
         send:'正在发送...',
-        sent:'发送成功'
+        sent:'发送成功',
+        version:'已经是最新版本'
     },
     error:{
         password:'密码错误',

@@ -1,13 +1,15 @@
-<script src="../../../../../../Desktop/动画片/transactions.ts"></script>
 <template>
-    <v-ons-page>
+    <v-ons-page @show="show">
         <div class="zhs_head">
             <img src="../../assets/head.png" class="zhs_head"/>
             <div class="zhs_txt">
                 {{$t('l.out.title')}} {{$store.state.pageText.model.txt}}
             </div>
-            <div class="zhs_left" @click="$store.commit('pop')">
+            <div class="zhs_left" @click="pop">
                 <img src="../../assets/left.png"/>
+            </div>
+            <div class="zhs_right">
+                <img v-if="$ons.platform.isWebView()" src="../../assets/scan1.png" class="scan" @click="scan"/>
             </div>
         </div>
         <v-ons-list class="out">
@@ -24,7 +26,8 @@
                 <div class="out_div_input">
                     <input v-model="tx.to" :placeholder="$t('l.out.please')+$t('l.out.to')"/>
                 </div>
-                <img v-if="$ons.platform.isWebView()" src="../../assets/scan.png" @click="scan"/>
+                <!---->
+                <img @click="push" src="../../assets/select.png" />
             </v-ons-list-item>
         </v-ons-list>
         <v-ons-list class="out">
@@ -77,7 +80,7 @@
                     message:''
                 },
                 alertDialog1Visible: false,
-
+                contacts: require('@/components/contacts/contactsIndex').default,
             }
         },
         methods: {
@@ -149,20 +152,30 @@
                                     this.$http.post(this.$store.state.pageText.model.api + '/nxt', signed).then(v => {
                                         this.alertDialog1Visible = false;
                                         let _this = this;
-                                        this.$ons.notification.alert({
-                                            'title': this.$t('l.prompt.title'),
-                                            'message': this.$t('l.prompt.sent'),
-                                            'callback': function () {
-                                                _this.$store.commit('pop');
-                                            }
-                                        })
+                                        if(v.data.error){
+                                            this.$ons.notification.alert({
+                                                'title': this.$t('l.prompt.title'),
+                                                'message': v.data.errorDescription,
+                                            })
+                                        }else{
+                                            this.$ons.notification.alert({
+                                                'title': this.$t('l.prompt.title'),
+                                                'message': this.$t('l.prompt.sent'),
+                                                'callback': function () {
+                                                    _this.$store.commit('pop');
+                                                }
+                                            })
+                                        }
+
                                     }).catch(error => {
+                                        this.alertDialog1Visible = false;
                                         this.$ons.notification.alert({
                                             'title': this.$t('l.prompt.title'),
                                             'message': this.$t('l.error.sent')
                                         })
                                     })
                                 }) .catch(error => {
+                                    this.alertDialog1Visible = false;
                                     this.$ons.notification.alert({
                                         'title': this.$t('l.prompt.title'),
                                         'message': this.$t('l.error.sent')
@@ -257,8 +270,22 @@
                     },
                 };
                 app.initialize();
-            }
+            },
+            push(){
+                this.$store.state.pageText.model.push = 'out';
+                this.$store.commit('push', {page: this.contacts});
+            },
+            pop(){
+                this.$store.state.pageText=''
+                this.$store.commit('pop')
+            },
+            show(){
+                if (this.$store.state.pageText.model.to) {
+                    this.tx.to = this.$store.state.pageText.model.to;
+                }
+            },
         },
+
         created: function () {
             if(this.$store.state.pageText.to!=''){
                 this.tx.to=this.$store.state.pageText.to;
@@ -268,6 +295,9 @@
 </script>
 
 <style scoped lang="less">
+    .scan{
+        width: 28px;margin-top: 16px;margin-left: 10px;
+    }
     .out {
         margin-top: 16px;
         background-image: none;

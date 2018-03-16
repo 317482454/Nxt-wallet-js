@@ -34,7 +34,7 @@
                 List: [
                 ],
                 model: '',
-                modalVisible:true
+                modalVisible:true,
             };
         },
         methods: {
@@ -42,10 +42,12 @@
                 this.$nextTick(() => {
                     let wallet = this.$store.state.wallet.list;
                     let model=JSON.parse(JSON.stringify(wallet[0]));
-                    model.address='ARDOR'+wallet[0].address.split('NXT')[1];
-                    model.chainId=this.List[index].id;
+                    model.address=this.List[index].txt.toLocaleUpperCase()+wallet[0].address.split('NXT')[1];
+                    if(this.List[index].id!=-1){
+                        model.chainId=this.List[index].id;
+                    }
                     model.txt=this.List[index].txt;
-                    model.api=this.$store.state.wallet.ardrApi;
+                    model.api=this.List[index].api;
                     model.sum=0;
                     if(this.List[index].is){
                          wallet.push(model)
@@ -71,10 +73,11 @@
             }
         },
         created: function () {
+
             this.$http.get(this.$store.state.wallet.ardrApi+"/nxt?requestType=getConstants&chain=1").then(v => {
                 this.modalVisible=false;
-               if(v.status==200){
-                   for (let key in v.data.chains){
+                if(v.status==200){
+                    for (let key in v.data.chains){
                        let t=false;
                        let txt=this.titleCase(key)=='Ardr'?'Ardor':this.titleCase(key);
                        this.$store.state.wallet.list.forEach(item=>{
@@ -82,10 +85,26 @@
                                t=true;
                            }
                        })
-                       this.List.push({txt:txt,id:v.data.chains[key],is:t})
+                       this.List.push({txt:txt,id:v.data.chains[key],is:t,api:this.$store.state.wallet.ardrApi})
                    }
-
-               }
+                }
+                this.$http.get(this.$store.state.url+'candy').then(v => {
+                    if(v.data){
+                        v.data.forEach(key=>{
+                            let t=false;
+                           // console.log(key);
+                           //  if(key.txt=='Dira'){
+                           //      key.api='http://159.65.31.71:3787'
+                           //  }
+                            this.$store.state.wallet.list.forEach(item=>{
+                                if(key.txt==item.txt){
+                                    t=true;
+                                }
+                            })
+                            this.List.push({txt:key.txt,id:key.id,is:t,api:key.api})
+                        })
+                    }
+                });
             }).catch(error=>{
                 this.modalVisible=false;
             })

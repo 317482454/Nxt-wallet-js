@@ -8,14 +8,30 @@ export const l = {
         language:'Language',
         delete:'Delete wallet',
         reward:'Reward author',
-        feedback:'Feedback'
+        feedback:'Feedback',
+        about:'About',
+        contact:'Contacts'
+    },
+    versionAlert:{
+        title:'Discover new version',
+        footer:[
+            'Cancel',
+            'Update'
+        ]
+    },
+    about:{
+        application:'Version',
+        feedback:'Feedback',
+        version:'Version log',
+        new:'Check the new version'
     },
     wallet:{
         title:'Total Assets (USD)',
         assets:'Add Assets',
         receive:'Receive',
         send:'Send',
-        details:'Details'
+        details:'Details',
+        price:'USD'
     },
     import:{
         title:'Import wallet',
@@ -59,7 +75,7 @@ export const l = {
         sum:'Balance',
         to:'Address',
         count:'Count',
-        message:'Message(optional)',
+        message:'Message',
         fees:'Fee',
         please:'Please enter',
         btn:'Send'
@@ -68,6 +84,28 @@ export const l = {
         title:'Quotes',
         rank:'Rank',
         amount:'Amount'
+    },
+    contacts:{
+        index:{
+            note:'Note',
+            payment:'Confirm payment',
+            modify:'Modify contacts',
+            delete:'Delete contact',
+            cancel:'Cancel',
+            del:'OK delete user:'
+        },
+        create:{
+            title:'New',
+            txt:'Define',
+            name:'Name',
+            addr:'Wallet address',
+            note:'Note',
+            add:'Add contact successfully'
+        },
+        update:{
+            title:'Modify'
+        }
+
     },
     copy:{
         title:'Copy',
@@ -78,7 +116,8 @@ export const l = {
         password:'Please enter your password',
         import:'Import success',
         send:'Sending...',
-        sent:'Send success'
+        sent:'Send success',
+        version:'Already the latest version'
     },
     error:{
         password:'Wrong password',
