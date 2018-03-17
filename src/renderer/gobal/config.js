@@ -68,13 +68,14 @@ let wallet = {
             }else{
                 api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address+'&chain='+model.chainId;
             }
-            console.log('222');
             _this.getUnconfirmedTransactions(vue, model).then(list=>{
                 console.log(list);
                 vue.$http.get(api).then(v => {
                     if (v.status == 200 && v.data) {
                         resolve(list.concat(v.data.transactions))
                     }
+                }).catch(error=>{
+                    vue.modalVisible=false
                 })
             })
 
@@ -92,6 +93,8 @@ let wallet = {
                 if (v.status == 200 && v.data) {
                     resolve(v.data.unconfirmedTransactions)
                 }
+            }).catch(error=>{
+                vue.modalVisible=false
             })
         });
     },
