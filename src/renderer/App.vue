@@ -117,9 +117,9 @@
         },
         created: function () {
             this.list();
-            // setInterval(() => {
-            //     this.list();
-            // }, 3000);
+            setInterval(() => {
+                this.list();
+            }, 3000);
            this.update()
         }
     }
