@@ -10,9 +10,9 @@
             </div>
             <section v-show="is" class="create">
                 <v-ons-card>
-                    <input type="text" :placeholder="$t('l.import.name')" v-model="user.name"/>
-                    <input type="password" :placeholder="$t('l.import.password')" v-model="user.password"/>
-                    <input type="password" :placeholder="$t('l.import.again')" v-model="passwordConfirm"/>
+                    <input type="text" :placeholder="$t('l.create.name')" v-model="user.name"/>
+                    <input type="password" :placeholder="$t('l.create.password')" v-model="user.password"/>
+                    <input type="password" :placeholder="$t('l.create.again')" v-model="passwordConfirm"/>
                 </v-ons-card>
                 <section class="section">
                     <ons-button class="button button--large" @click="save" modifier="large">
@@ -63,7 +63,9 @@
                 passwordConfirm: '',
                 is: true,
                 copyShow: false,
-                phrase: ''
+                phrase: '',
+                checkboxIs:false,
+                protocol:require('@/components/user/protocol').default,
             }
         },
         methods: {
@@ -88,7 +90,9 @@
                 }
 
             },
-
+            push(page){
+                this.$store.commit('push', {page: page,txt: ''});
+            },
         },
         created: function () {
             let _this = this;
@@ -106,6 +110,15 @@
 </script>
 
 <style scoped lang="less">
+    .create_list{
+        background: inherit;font-size: 12px;
+        label{
+            color: #fff;
+            span{
+                color: #fff;font-size: 12px;border-bottom: 1px dotted #fff;
+            }
+        }
+    }
     .create {
         margin: 15px 20px;
         input {

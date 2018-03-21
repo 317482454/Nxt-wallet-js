@@ -128,7 +128,6 @@
             pass() {
                 this.$g.wallet.getWallet(this).then(pass => {
                     this.password = pass;
-                    console.log(this.password);
                 });
             },
             kyes() {

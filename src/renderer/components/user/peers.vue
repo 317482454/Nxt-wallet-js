@@ -102,7 +102,7 @@
             }
             this.peers = [];
             let bis=false;
-            this.$http.get( api+'/nxt-proxy?requestType=getPeers&active=true&includePeerInfo=true').then(v => {
+            this.$http.get( api+'/nxt-proxy?requestType=getPeers&active=true&includePeerInfo=true',{timeout:3000}).then(v => {
                 this.modalVisible=false;
                 if (v.status == 200) {
                     v.data.peers.forEach(item => {

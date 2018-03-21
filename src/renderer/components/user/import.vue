@@ -8,18 +8,22 @@
                 </div>
                 {{$t('l.import.title')}}
             </div>
-            <v-ons-card>
-                <input type="text" :placeholder="$t('l.import.name')" v-model="user.name"/>
-                <input type="password" :placeholder="$t('l.import.password')" v-model="user.password"/>
-                <input type="password" :placeholder="$t('l.import.again')" v-model="passwordConfirm"/>
-                <input type="text" :placeholder="$t('l.import.phrase')" v-model="user.phrase"/>
-            </v-ons-card>
-            <section class="section">
-                <ons-button class="button button--large button" @click="save" modifier="large">
-                    {{$t('l.import.btn')}}
-                </ons-button>
+            <section style="margin: 15px 20px;">
+                <v-ons-card style="background: #fff">
+                    <input type="text" :placeholder="$t('l.import.name')" v-model="user.name"/>
+                    <input type="password" :placeholder="$t('l.import.password')" v-model="user.password"/>
+                    <input type="password" :placeholder="$t('l.import.again')" v-model="passwordConfirm"/>
+                    <input type="text" :placeholder="$t('l.import.phrase')" v-model="user.phrase"/>
+                </v-ons-card>
+
+                <section class="section">
+                    <ons-button class="button button--large button" @click="save" modifier="large">
+                        {{$t('l.import.btn')}}
+                    </ons-button>
+                </section>
             </section>
         </div>
+
     </v-ons-page>
 </template>
 
@@ -34,7 +38,9 @@
                     phrase: ''
                 },
                 model: {},
-                passwordConfirm: ''
+                passwordConfirm: '',
+                checkboxIs:false,
+                protocol:require('@/components/user/protocol').default,
             }
         },
         methods: {
@@ -61,12 +67,32 @@
                 }
 
 
-            }
+            },
+            push(page){
+                this.$store.commit('push', {page: page,txt: ''});
+            },
+        },
+        created: function () {
+            this.$ons.notification.confirm({
+                title: this.$t('l.prompt.disclaimer'),
+                message: this.$t('l.prompt.disclaimerTxt'),
+                buttonLabels:this.$t('l.prompt.buttonLabels'),
+            })
         }
+
     }
 </script>
 
 <style scoped lang="less">
+    .create_list{
+        background: inherit;font-size: 12px;
+        label{
+            color: #fff;
+            span{
+                color: #fff;font-size: 12px;border-bottom: 1px dotted #fff;
+            }
+        }
+    }
     input {
         height: 34px;
         border: none;

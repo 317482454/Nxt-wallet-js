@@ -46,7 +46,9 @@ export const l = {
         password:'钱包密码',
         again:'再次输入钱包密码',
         btn:'创建',
-        phrase:'助记词'
+        phrase:'助记词',
+        protocol:'请阅读并同意',
+        protocolTxt:'免责协议'
     },
     peers:{
         title:'节点设置',
@@ -116,6 +118,18 @@ export const l = {
         time:'交易时间',
         confirm:'确定'
     },
+    protocol:{
+      title:'免责协议',
+      txt:'对以下情形不承担责任：',
+      list:[
+          '因用户遗失移动设备、删除且未备份Nxt Wallet、删除且未备份钱包、钱包被盗或遗忘钱包密码、助记词而导致的数字代币丢失；',
+          '因用户自行泄露钱包密码、助记词或借用、转让或授权他人使用自己的移动设备或Nxt Wallet钱包，或未通过官方渠道下载Nxt Wallet应用程序或其他不安全的方式使用Nxt Wallet应用程序导致的数字代币丢失',
+          '因用户误操作（包括但不限于您输错转账地址、您自身选择转账节点服务器的问题）导致的数字代币丢失',
+          '因用户不理解区块链技术的性质而进行误操作导致的数字代币丢失',
+          '因时间滞后、区块链系统不稳定等原因导致在区块链上的交易记录发生偏差',
+          '用户在第三方DApp上操作产生的风险和后果'
+      ]
+    },
     copy:{
       title:'复制',
       txt:'复制成功',
@@ -126,7 +140,10 @@ export const l = {
         import:'导入成功',
         send:'正在发送...',
         sent:'发送成功',
-        version:'已经是最新版本'
+        version:'已经是最新版本',
+        disclaimer:'免责声明',
+        disclaimerTxt:'Nxt Wallet不承担钱包丢失、被盗、忘记密码等产生等资产损失。',
+        buttonLabels: ['取消', '确定'],
     },
     error:{
         password:'密码错误',

@@ -104,16 +104,14 @@
             }
         },
         mounted: function () {
-            let api=''
-            if(this.$store.state.pageText.txt=='Nxt'){
-                api=this.$store.state.pageText.api;
-            }else{
-                api=this.$store.state.wallet.ardrApi;
-            }
-            this.$http.get(api+"/nxt?requestType=getConstants").then(v => {
-                this.epochBeginning=v.data.epochBeginning
+
+            console.log(this.$store.state.pageText);
+            this.$http.get(this.$store.state.pageText.api+"/nxt?requestType=getConstants",{timeout:5000}).then(v => {
+                this.epochBeginning=v.data.epochBeginning;
                 this.load();
-            });
+            }).catch(error=>{
+                this.modalVisible=false
+            })
         }
     }
 </script>

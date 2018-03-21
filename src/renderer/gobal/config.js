@@ -31,7 +31,7 @@ let wallet = {
                     publickey:publickey ,
                     address: vue.$nxt.publicKeyToAccountId(publickey,false),
                     txt: txt,
-                    api: 'http://178.33.203.157:7876',
+                    api: 'http://174.140.167.239:7876',
                 }
             ]
         };
@@ -48,7 +48,6 @@ let wallet = {
             }
 
             vue.$http.get(api).then(v => {
-
                 if (v.status == 200 && v.data) {
                     if (v.data.errorCode) {
                         resolve('errorCode')
@@ -69,8 +68,7 @@ let wallet = {
                 api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address+'&chain='+model.chainId;
             }
             _this.getUnconfirmedTransactions(vue, model).then(list=>{
-                console.log(list);
-                vue.$http.get(api).then(v => {
+                vue.$http.get(api,{timeout:5000}).then(v => {
                     if (v.status == 200 && v.data) {
                         resolve(list.concat(v.data.transactions))
                     }
@@ -89,7 +87,7 @@ let wallet = {
             }else{
                 api = api + '/nxt?requestType=getUnconfirmedTransactions&account=' + model.address+'&chain='+model.chainId;
             }
-            vue.$http.get(api).then(v => {
+            vue.$http.get(api,{timeout:5000}).then(v => {
                 if (v.status == 200 && v.data) {
                     resolve(v.data.unconfirmedTransactions)
                 }
