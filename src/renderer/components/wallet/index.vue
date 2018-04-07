@@ -21,8 +21,8 @@
                     </div>
                 </div>
             </v-ons-list>
-            <v-ons-card class="wallet_index_list" v-for="item in $store.state.wallet.list">
-                <div class="wallet_index_list_warpHead">
+            <v-ons-card class="wallet_index_list" v-for="(item,index) in $store.state.wallet.list">
+                <div @click="setting(index)" class="wallet_index_list_warpHead">
                     <div class=" wallet_index_list_name">
                         {{item.txt}}
                     </div>
@@ -32,6 +32,7 @@
                     <div class="wallet_index_list_frizen">
                         {{item.address}}
                     </div>
+                    <div v-show="item.is" class="state"></div>
                 </div>
                 <div class="wallet_index_list_btn">
                     <div class="wallet_index_list_warp">
@@ -58,6 +59,15 @@
                 </div>
             </v-ons-card>
         </div>
+        <section>
+            <v-ons-action-sheet :visible.sync="settingSheetVisible"
+                                cancelable
+                                :title="model.txt+' '+$t('l.wallet.setting.title')">
+                <v-ons-action-sheet-button @click="settingPeers" icon="md-square-o">{{$t('l.wallet.setting.node')}}</v-ons-action-sheet-button>
+                <v-ons-action-sheet-button @click="settingDel" v-show="model.index!=0" icon="md-square-o">{{$t('l.wallet.setting.del')}}</v-ons-action-sheet-button>
+                <v-ons-action-sheet-button @click="settingSheetVisible=false"  icon="md-square-o">{{$t('l.wallet.setting.cancel')}}</v-ons-action-sheet-button>
+            </v-ons-action-sheet>
+        </section>
     </v-ons-page>
 </template>
 
@@ -83,6 +93,9 @@
                     // }
                 ],
                 state: 'initial',
+                peers: require('@/components/user/peers').default,
+                settingSheetVisible:false,
+                model:{}
             };
         },
         methods: {
@@ -95,6 +108,21 @@
                     this.$parent.$parent.$parent.$parent.$parent.list();
                     done();
                 }, 400);
+            },
+            setting(index){
+                this.settingSheetVisible=true;
+                this.model=this.$store.state.wallet.list[index];
+                this.model.index=index;
+            },
+            settingDel(){
+                this.settingSheetVisible=false;
+                this.$store.state.wallet.list.splice(this.model.index,1)
+                this.$store.commit('setWalletList2', this.$store.state.wallet.list);
+            },
+            settingPeers(){
+                this.settingSheetVisible=false;
+                this.$store.commit('push', {page: this.peers,txt:this.model});
+
             }
         },
         created: function () {
@@ -176,6 +204,10 @@
             .wallet_index_list_warpHead {
                 margin-left: 25px;
                 padding-top: 18px;
+                position: relative;
+                .state{
+                    right: 20px;top: 20px;border-radius: 50%;position: absolute;width: 12px;height: 12px;background: red;
+                }
                 .wallet_index_list_name {
                     color: #049adc
                 }

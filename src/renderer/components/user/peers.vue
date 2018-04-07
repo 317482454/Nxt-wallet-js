@@ -4,7 +4,7 @@
             <div class="zhs_head" style="position: fixed;top: 0;z-index: 10" >
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    {{this.$store.state.pageText}}{{$t('l.peers.title')}}
+                    {{this.$store.state.pageText.txt}} {{$t('l.peers.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
@@ -46,22 +46,8 @@
                     v.is = false;
                 })
                 this.$set(this.peers[index], 'is', true);
-                let api = this.peers[index].api;
-                if(this.$store.state.pageText=='Nxt') {
-                    this.$store.state.wallet.list.forEach(v => {
-                        if (v.txt == 'Nxt') {
-                            v.api = api;
-                        }
-                    });
-                }else{
-                    this.$store.state.wallet.ardrApi=api;
-                    this.$store.state.wallet.list.forEach(v => {
-                        if (v.txt != 'Nxt') {
-                            v.api = api;
-                        }
-                    });
-                }
-                 this.$store.commit('setWallet', this.$store.state.wallet);
+                this.$store.state.pageText.api=this.peers[index].api;
+                this.$store.commit('setWallet', this.$store.state.wallet);
             },
             addPeers(){
                 let _this=this;
@@ -70,9 +56,8 @@
                     'message': this.$t('l.peers.prompt'),
                     'callback': function (data) {
                         _this.modalVisible=true;
-                        _this.$http.get( data+'/nxt?requestType=getBlockchainStatus',{timeout:3000}).then(v=>{
+                        _this.$http.get(data+'/nxt?requestType=getBlockchainStatus',{timeout:3000}).then(v=>{
                             if(v.status==200){
-                                console.log(v);
                                 if(v.data.services.toString().indexOf('CORS')!=-1&&v.data.services.toString().indexOf('API')!=-1){
                                     _this.peers.unshift({api:data,is:false})
                                 }
@@ -90,16 +75,7 @@
             }
         },
         mounted: function () {
-            let api = ''
-            if(this.$store.state.pageText=='Nxt'){
-                this.$store.state.wallet.list.forEach(v => {
-                    if (v.txt == 'Nxt') {
-                        api = v.api;
-                    }
-                });
-            }else{
-                api=this.$store.state.wallet.ardrApi;
-            }
+            let api =this.$store.state.pageText.api;
             this.peers = [];
             let bis=false;
             this.$http.get( api+'/nxt-proxy?requestType=getPeers&active=true&includePeerInfo=true',{timeout:3000}).then(v => {
@@ -132,7 +108,6 @@
             }).catch(error=>{
                 this.modalVisible=false;
             })
-
         }
     }
 </script>

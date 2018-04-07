@@ -31,25 +31,20 @@
                 <v-ons-list-item tappable modifier="chevron" @click="push(pages[3].page)">
                     <img src="../../assets/Phrase.png" />{{$t('l.profile.phrase')}}
                 </v-ons-list-item>
-                <v-ons-list-item tappable modifier="chevron" @click="peersSheetVisible=true" >
-                    <img src="../../assets/yun.png" />{{$t('l.profile.node')}}
-                </v-ons-list-item>
-            </v-ons-list>
-            <v-ons-list class="index_list"  style="margin-top: 10px;">
-                <v-ons-list-item tappable modifier="chevron" @click="languageSheetVisible=true">
-                    <img src="../../assets/language.png" />{{$t('l.profile.language')}}
-                </v-ons-list-item>
                 <v-ons-list-item v-if="$store.state.wallet.name" tappable modifier="chevron"  @click="out">
                     <img src="../../assets/logOut.png" />{{$t('l.profile.delete')}}
                 </v-ons-list-item>
             </v-ons-list>
             <v-ons-list class="index_list"
                         style="margin-top: 10px;" >
-                <v-ons-list-item tappable modifier="chevron"  v-if="$store.state.wallet.name"  @click="actionSheetVisible=true">
-                    <img src="../../assets/reward.png" />{{$t('l.profile.reward')}}
+                <v-ons-list-item tappable modifier="chevron" @click="languageSheetVisible=true">
+                    <img src="../../assets/language.png" />{{$t('l.profile.language')}}
                 </v-ons-list-item>
                 <v-ons-list-item @click="push(about)" tappable modifier="chevron">
                     <img src="../../assets/fk.png" />{{$t('l.profile.about')}}
+                </v-ons-list-item>
+                <v-ons-list-item tappable modifier="chevron"  v-if="$store.state.wallet.name"  @click="actionSheetVisible=true">
+                    <img src="../../assets/reward.png" />{{$t('l.profile.reward')}}
                 </v-ons-list-item>
             </v-ons-list>
            <section v-show="$store.state.wallet.name">
@@ -140,6 +135,7 @@
             },
             out() {
                 this.$g.wallet.getWallet(this).then(pass => {
+                    console.log(pass);
                     if (pass.plaintext != '') {
                         this.$store.commit('logOutWallet');
                     }

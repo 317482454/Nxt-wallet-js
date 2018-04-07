@@ -26,7 +26,6 @@
                 <div class="out_div_input">
                     <input v-model="tx.to" :placeholder="$t('l.out.please')+$t('l.out.to')"/>
                 </div>
-                <!---->
                 <img @click="push" src="../../assets/select.png" />
             </v-ons-list-item>
         </v-ons-list>
@@ -285,8 +284,18 @@
                 }
             },
         },
-
         created: function () {
+            if(this.$store.state.pageText.model.publickey==''){
+                let _this=this;
+                this.$ons.notification.alert({
+                    'title': this.$t('l.prompt.title'),
+                    'message': this.$t('l.out.addr'),
+                    'callback':function () {
+                        _this.$store.commit('pop');
+                    }
+                })
+            }
+
             if(this.$store.state.pageText.to!=''){
                 this.tx.to=this.$store.state.pageText.to;
             }

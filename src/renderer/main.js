@@ -18,7 +18,6 @@ Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 store.commit('getWallet')
 store.commit('getLang')
-
 Vue.prototype.md =false;
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)

@@ -73,41 +73,23 @@
             }
         },
         created: function () {
-
-            this.$http.get(this.$store.state.wallet.ardrApi+"/nxt?requestType=getConstants&chain=1").then(v => {
+            this.$http.get(this.$store.state.url+'candy').then(v => {
                 this.modalVisible=false;
-                if(v.status==200){
-                    for (let key in v.data.chains){
-                       let t=false;
-                       let txt=this.titleCase(key)=='Ardr'?'Ardor':this.titleCase(key);
-                       this.$store.state.wallet.list.forEach(item=>{
-                           if(txt==item.txt){
-                               t=true;
-                           }
-                       })
-                       this.List.push({txt:txt,id:v.data.chains[key],is:t,api:this.$store.state.wallet.ardrApi})
-                   }
-                }
-                this.$http.get(this.$store.state.url+'candy').then(v => {
-                    if(v.data){
-                        v.data.forEach(key=>{
-                            let t=false;
-                           // console.log(key);
-                           //  if(key.txt=='Dira'){
-                           //      key.api='http://159.65.31.71:3787'
-                           //  }
-                            this.$store.state.wallet.list.forEach(item=>{
-                                if(key.txt==item.txt){
-                                    t=true;
-                                }
-                            })
-                            this.List.push({txt:key.txt,id:key.id,is:t,api:key.api})
+                if(v.data){
+                    v.data.forEach(key=>{
+                        let t=false;
+                        this.$store.state.wallet.list.forEach(item=>{
+                            if(key.txt==item.txt){
+                                t=true;
+                            }
                         })
-                    }
-                });
+                        this.List.push({txt:key.txt,id:key.id,is:t,api:key.api})
+                    })
+                }
             }).catch(error=>{
                 this.modalVisible=false;
             })
+
         }
     }
 </script>

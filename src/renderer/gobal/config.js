@@ -38,6 +38,26 @@ let wallet = {
         localStorage.setItem('wallet', JSON.stringify(wallet));
         vue.$store.commit('getWallet');
     },
+    setWalletAddr(name, pass, addr, txt, vue) {
+        let publickey='';
+        let wallet = {
+            name: name,
+            phrase: this.encrypt(addr, pass),
+            ardrApi:'http://62.75.159.113:27876',
+            list: [
+                {
+                    phrase: this.encrypt(addr, pass),
+                    publickey:publickey ,
+                    address: addr,
+                    txt: txt,
+                    api: 'http://174.140.167.239:7876',
+                }
+            ]
+        };
+        console.log(this.encrypt(addr, addr));
+        localStorage.setItem('wallet', JSON.stringify(wallet));
+        vue.$store.commit('getWallet');
+    },
     getAccount(vue, model) {
         return new Promise(function (resolve) {
             let api = model.api;
@@ -47,7 +67,7 @@ let wallet = {
                 api = api + '/nxt?requestType=getBalance&account=' + model.address+'&chain='+model.chainId;
             }
 
-            vue.$http.get(api).then(v => {
+            vue.$http.get(api,{timeout:5000}).then(v => {
                 if (v.status == 200 && v.data) {
                     if (v.data.errorCode) {
                         resolve('errorCode')
@@ -55,6 +75,8 @@ let wallet = {
                         resolve((parseInt(v.data.balanceNQT) * 0.00000001).toFixed(2))
                     }
                 }
+            }).catch(err=>{
+                resolve('500')
             })
         });
     },
@@ -118,6 +140,7 @@ let wallet = {
             let plaintext;
             try {
                 plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                console.log(plaintext);
             } catch (e) {
                 plaintext = ''
             }

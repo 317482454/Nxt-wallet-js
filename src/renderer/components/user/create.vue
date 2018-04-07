@@ -95,6 +95,11 @@
             },
         },
         created: function () {
+            this.$ons.notification.confirm({
+                title: this.$t('l.prompt.disclaimer'),
+                message: this.$t('l.prompt.disclaimerTxt'),
+                buttonLabels:this.$t('l.prompt.buttonLabels'),
+            })
             let _this = this;
             new Clipboard('.copyAddr', {
                 text: function (trigger) {

@@ -44,8 +44,8 @@
                 let _this=this;
                 if(pass.plaintext==''){
                     this.$ons.notification.alert({
-                        'title': '提示',
-                        'message': '密码错误',
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.password'),
                         'callback':function () {
                             _this.$store.commit('pop');
                         }

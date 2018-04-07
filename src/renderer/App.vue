@@ -55,10 +55,14 @@
                         this.$g.wallet.getAccount(this, v).then(sum => {
                             if (sum == 'errorCode') {
                                 v.sum=0;
-                                v.is = false;
                             } else {
                                 v.sum = sum;
+                            }
+                            if(sum=='500'){
+                                v.sum=0;
                                 v.is = true;
+                            }else{
+                                v.is = false;
                             }
                         })
                         model.push(v);
@@ -120,16 +124,33 @@
             setInterval(() => {
                 this.list();
             }, 3000);
-           this.update()
+            this.update()
         }
     }
 </script>
 
-<style>
+<style lang="less">
     .toolbar {
         position: relative;
     }
-
+    .segment__item{
+        div{
+            position: inherit !important;
+            width: auto !important;
+            height: auto !important;
+            text-align: center !important;
+        }
+        :checked + .segment__button {
+            background-color: #fff;
+            color: rgb(26, 153, 213);
+            transition: none;
+        }
+        .segment__button{
+            background-color:rgb(1, 169, 249);
+            color: #fff;
+            border: none;
+        }
+    }
     body {
         background: none transparent;
     }

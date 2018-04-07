@@ -12,7 +12,8 @@ export default new Vuex.Store({
         sum:'',
         lang:'',
         url:'http://www.walletnxt.com:8080/',
-        version:'1.0.1'
+        //url:'http://localhost:3003/',
+        version:'1.0.2'
     },
     mutations: {
         ['getWallet'] (state,password) {

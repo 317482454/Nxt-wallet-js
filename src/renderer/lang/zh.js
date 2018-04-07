@@ -30,7 +30,13 @@ export const l = {
         receive:'接收',
         send:'发送',
         details:'明细',
-        price:'CNY'
+        price:'CNY',
+        setting:{
+            title:'设置',
+            node:'节点',
+            del:'删除',
+            cancel:'取消'
+        },
     },
     import:{
         title:'导入钱包',
@@ -38,7 +44,8 @@ export const l = {
         password:'钱包密码',
         again:'再次输入钱包密码',
         phrase:'助记词',
-        btn:'导入'
+        btn:'导入',
+        addr:'地址'
     },
     create:{
         title:'创建钱包',
@@ -79,7 +86,8 @@ export const l = {
         message:'消息(可选)',
         fees:'手续费',
         please:'请输入',
-        btn:'确定发送'
+        btn:'确定发送',
+        addr:'请使用助记词导入，再进行该操作'
     },
     market:{
         title:'行情',
@@ -144,6 +152,7 @@ export const l = {
         disclaimer:'免责声明',
         disclaimerTxt:'Nxt Wallet不承担钱包丢失、被盗、忘记密码等产生等资产损失。',
         buttonLabels: ['取消', '确定'],
+        addr:'导入地址默认显示Nxt'
     },
     error:{
         password:'密码错误',

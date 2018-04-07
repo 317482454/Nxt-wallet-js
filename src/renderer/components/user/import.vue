@@ -1,12 +1,15 @@
 <template>
-    <v-ons-page >
+    <v-ons-page @show="load" >
         <!--<img class="zhs_ps" src="../../assets/bg.png"/>-->
         <div class="zhs_ps" style="background: rgb(26, 153, 213);">
             <div class="zhs_ps_head">
                 <div @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
                 </div>
-                {{$t('l.import.title')}}
+                <v-ons-segment @postchange="changge" :index.sync="segmentIndex" style="width: 180px;    height: 32px;">
+                    <button>{{$t('l.import.phrase')}}</button>
+                    <button>{{$t('l.import.addr')}}</button>
+                </v-ons-segment>
             </div>
             <section style="margin: 15px 20px;">
                 <v-ons-card style="background: #fff">
@@ -28,7 +31,6 @@
 </template>
 
 <script>
-
     export default {
         data() {
             return {
@@ -37,10 +39,12 @@
                     password: '',
                     phrase: ''
                 },
+                segmentIndex:0,
                 model: {},
                 passwordConfirm: '',
                 checkboxIs:false,
                 protocol:require('@/components/user/protocol').default,
+                addr:require('@/components/user/importAddr').default,
             }
         },
         methods: {
@@ -71,6 +75,14 @@
             push(page){
                 this.$store.commit('push', {page: page,txt: ''});
             },
+            changge(){
+                if(this.segmentIndex==1){
+                    this.push(this.addr)
+                }
+            },
+            load(){
+                this.segmentIndex=0;
+            }
         },
         created: function () {
             this.$ons.notification.confirm({
@@ -79,7 +91,6 @@
                 buttonLabels:this.$t('l.prompt.buttonLabels'),
             })
         }
-
     }
 </script>
 

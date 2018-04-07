@@ -31,7 +31,13 @@ export const l = {
         receive:'Receive',
         send:'Send',
         details:'Details',
-        price:'USD'
+        price:'USD',
+        setting:{
+            title:'Settings',
+            node:'Node',
+            del:'Delete',
+            cancel:'Cancel'
+        },
     },
     import:{
         title:'Import wallet',
@@ -39,7 +45,9 @@ export const l = {
         password:'Wallet password',
         again:'Enter the wallet password again',
         phrase:'Passphrase',
-        btn:'Import'
+        btn:'Import',
+        addr:'Address',
+
     },
     create:{
         title:'Create wallet',
@@ -80,7 +88,8 @@ export const l = {
         message:'Message',
         fees:'Fee',
         please:'Please enter',
-        btn:'Send'
+        btn:'Send',
+        addr:'Please use Passphrase import，Then do this'
     },
     market:{
         title:'Quotes',
@@ -143,6 +152,8 @@ export const l = {
         disclaimer:'Disclaimer',
         disclaimerTxt:'Nxt Wallet will not be responsible for lost wallets, stolen, lost passwords and other assets.',
         buttonLabels: ['Cancel', 'OK'],
+        addr:'Import address shows NXT by default'
+
     },
     error:{
         password:'Wrong password',

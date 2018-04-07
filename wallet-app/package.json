@@ -10,10 +10,10 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "cordova-android": "^5.1.0",
+    "cordova-android": "^6.1.0",
     "cordova-ios": "^4.5.4",
     "cordova-plugin-compat": "^1.2.0",
-    "cordova-plugin-crosswalk-webview": "^2.4.1",
+    "cordova-plugin-crosswalk-webview": "^2.4.0",
     "cordova-plugin-qrscanner": "^2.5.0",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-swift-support": "^3.1.1",
@@ -21,20 +21,14 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-qrscanner": {},
-      "cordova-plugin-splashscreen": {},
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-crosswalk-webview": {
-        "XWALK_VERSION": "23+",
-        "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
-        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect",
-        "XWALK_MODE": "embedded",
-        "XWALK_MULTIPLEAPK": "true"
-      }
+      "cordova-plugin-qrscanner": {},
+      "cordova-plugin-crosswalk-webview": {},
+      "cordova-plugin-splashscreen": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }
