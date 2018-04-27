@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Nxt-wallet</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
       <script>
@@ -17,6 +18,7 @@
       }
     </style>
     <script src="http://sdk.talkingdata.com/app/h5/v1?appid=B328A7C42F554730BE1A4145AECB2649&vn=Nxt Wallet&vc=1.0"></script>
+    <!--<script src="http://sdk.talkingdata.com/app/h5/v1?appid=ED795888C3F245BA8ACB303FC14FB0ED&vn=H5 WalletNxt&vc=1.0"></script>-->
   </head>
   <body>
     <div id="app"  ></div>

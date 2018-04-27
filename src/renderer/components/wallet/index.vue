@@ -68,6 +68,13 @@
                 <v-ons-action-sheet-button @click="settingSheetVisible=false"  icon="md-square-o">{{$t('l.wallet.setting.cancel')}}</v-ons-action-sheet-button>
             </v-ons-action-sheet>
         </section>
+        <!--<v-ons-speed-dial position="bottom right" direction="up"-->
+                          <!--:visible="spdVisible"-->
+                          <!--&gt;-->
+            <!--<v-ons-fab>-->
+                <!--<v-ons-icon icon="ion-jfsc"></v-ons-icon>-->
+            <!--</v-ons-fab>-->
+        <!--</v-ons-speed-dial>-->
     </v-ons-page>
 </template>
 
@@ -75,6 +82,7 @@
     export default {
         data() {
             return {
+                spdVisible:true,
                 pages: [
                     {
                         page: require('@/components/wallet/addAssets').default
@@ -131,6 +139,12 @@
 </script>
 
 <style scoped lang="less">
+    .ion-jfsc {
+        background: url("../../assets/jfsc.png");
+        height: 26px;
+        width: 26px;
+        background-size: cover;
+    }
     .wallet_index {
         position: relative;
         .wallet_index_head {

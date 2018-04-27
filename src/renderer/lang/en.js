@@ -92,9 +92,10 @@ export const l = {
         addr:'Please use Passphrase import，Then do this'
     },
     market:{
-        title:'Quotes',
+        title:'Market',
         rank:'Rank',
-        amount:'Amount'
+        amount:'Amount',
+        detailsTitle:'Exchange'
     },
     contacts:{
         index:{

@@ -54,7 +54,6 @@ let wallet = {
                 }
             ]
         };
-        console.log(this.encrypt(addr, addr));
         localStorage.setItem('wallet', JSON.stringify(wallet));
         vue.$store.commit('getWallet');
     },
@@ -76,7 +75,7 @@ let wallet = {
                     }
                 }
             }).catch(err=>{
-                resolve('500')
+                resolve('errorCode404')
             })
         });
     },
@@ -140,7 +139,6 @@ let wallet = {
             let plaintext;
             try {
                 plaintext = bytes.toString(CryptoJS.enc.Utf8);
-                console.log(plaintext);
             } catch (e) {
                 plaintext = ''
             }

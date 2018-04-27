@@ -135,7 +135,6 @@
             },
             out() {
                 this.$g.wallet.getWallet(this).then(pass => {
-                    console.log(pass);
                     if (pass.plaintext != '') {
                         this.$store.commit('logOutWallet');
                     }

@@ -4,7 +4,7 @@
             <div class="zhs_head">
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    {{$store.state.pageText.txt}}{{$t('l.transactionDetails.title')}}
+                    {{$store.state.pageText.txt}} {{$t('l.transactionDetails.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
@@ -71,26 +71,57 @@
             }
         },
         methods: {
-            analyz(){
-                // decryptMessage（cipherText，nonce，senderPublicKey，recipientSecretPhrase）
-                this.$g.wallet.getWallet(this).then(pass => {
-                    if (pass.plaintext != '') {
-                      this.message=this.$nxt.decryptMessage(this.$store.state.pageText.item.attachment.encryptedMessage.data,
-                            this.$store.state.pageText.item.attachment.encryptedMessage.nonce,
-                            this.$store.state.pageText.item.senderPublicKey,
-                            pass.plaintext)
-                    }
-                    else {
-                        this.$ons.notification.alert({
-                            'title': this.$t('l.prompt.title'),
-                            'message': this.$t('l.error.password')
-                        })
-                    }
-                })
+            analyz() {
+                if (this.$store.state.pageText.publickey != '') {
+                    this.$g.wallet.getWallet(this).then(pass => {
+                        if (pass.plaintext != '') {
+                            this.message = this.$nxt.decryptMessage(this.$store.state.pageText.item.attachment.encryptedMessage.data,
+                                this.$store.state.pageText.item.attachment.encryptedMessage.nonce,
+                                this.$store.state.pageText.item.senderPublicKey,
+                                pass.plaintext)
+                        }
+                        else {
+                            this.$ons.notification.alert({
+                                'title': this.$t('l.prompt.title'),
+                                'message': this.$t('l.error.password')
+                            })
+                        }
+                    })
+                }
+                else {
+                    let _this = this;
+                    this.$ons.notification.prompt({
+                        'inputType': 'password',
+                        'title': '提示',
+                        'message': '请输入助记词',
+                        'callback': function (phrase) {
+                            if (phrase != '') {
+                                let publickey=_this.$nxt.secretPhraseToPublicKey(phrase)
+                                let addr=_this.$nxt.publicKeyToAccountId(publickey,false).split('-');
+                                addr.splice(0,1)
+                                let addr2=_this.$store.state.pageText.address.split('-')
+                                addr2.splice(0,1)
+                                if(addr.toString()==addr2.toString()){
+                                    _this.message = _this.$nxt.decryptMessage(_this.$store.state.pageText.item.attachment.encryptedMessage.data,
+                                        _this.$store.state.pageText.item.attachment.encryptedMessage.nonce,
+                                        _this.$store.state.pageText.item.senderPublicKey,
+                                        phrase)
+                                }else{
+                                    _this.$ons.notification.alert({
+                                        title: '提示',
+                                        message: '助记词错误',
+                                        buttonLabels:_this.$t('l.prompt.buttonLabels')[1],
+                                    })
+                                }
+
+                            }
+                        }
+                    });
+                }
             }
         },
         mounted: function () {
-            console.log(this.$store.state.pageText);
+
         }
     }
 </script>

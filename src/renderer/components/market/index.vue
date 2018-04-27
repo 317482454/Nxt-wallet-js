@@ -1,43 +1,43 @@
 <template>
     <v-ons-page>
-        <v-ons-pull-hook :action="loadItem" :height="84" @changestate="state = $event.state">
-            <v-ons-icon size="22px" class="pull-hook-spinner"
-                        :icon="state === 'action' ? 'fa-spinner' : 'fa-arrow-down'"
-                        :rotate="state === 'preaction' && 180" :spin="state === 'action'"></v-ons-icon>
-        </v-ons-pull-hook>
         <section>
-            <div class="zhs_head" >
-                <!--<img src="../../assets/head.png" class="zhs_head"/>-->
+            <div class="zhs_head" style="z-index:99999;">
                 <div class="zhs_txt">
                     {{$t('l.market.title')}}
                 </div>
             </div>
-            <div v-for="(item,index) in $store.state.ticker" class="details_List">
-                <div class="title">
-                    {{item.ticker.text}}（{{$t('l.market.rank')}}：{{item.ticker.rank}}）
-                </div>
-                <div class="warp">
-                    {{item.ticker.name}}
-                    <div class="percent"
-                         v-show="item.ticker.percent_change_24h.toString().indexOf('-')==-1">
-                        +{{item.ticker.percent_change_24h}}%
+            <div>
+                <v-ons-pull-hook :action="loadItem" :height="84" @changestate="state = $event.state">
+                    <v-ons-icon size="22px" class="pull-hook-spinner"
+                                :icon="state === 'action' ? 'fa-spinner' : 'fa-arrow-down'"
+                                :rotate="state === 'preaction' && 180" :spin="state === 'action'"></v-ons-icon>
+                </v-ons-pull-hook>
+                <div @click="push(details,index)" v-for="(item,index) in $store.state.ticker" class="details_List">
+                    <div class="title">
+                        {{item.ticker.text}}（{{$t('l.market.rank')}}：{{item.ticker.rank}}）
                     </div>
-                    <div class="percent" style="background: #e40101"
-                         v-show="item.ticker.percent_change_24h.toString().indexOf('-')!=-1">
-                         {{item.ticker.percent_change_24h}}%
+                    <div class="warp">
+                        {{item.ticker.name}}
+                        <div class="percent"
+                             v-show="item.ticker.percent_change_24h.toString().indexOf('-')==-1">
+                            +{{item.ticker.percent_change_24h}}%
+                        </div>
+                        <div class="percent" style="background: #e40101"
+                             v-show="item.ticker.percent_change_24h.toString().indexOf('-')!=-1">
+                            {{item.ticker.percent_change_24h}}%
+                        </div>
+
+                        <div class="price" v-show="$i18n.locale=='zh-CN'">
+                            {{parseFloat(item.ticker.price_cny).toFixed(2)}} CNY
+                        </div>
+                        <div class="price" v-show="$i18n.locale!='zh-CN'">
+                            {{parseFloat(item.ticker.price_usd).toFixed(6)}} USD
+                        </div>
                     </div>
-                    <div class="price" v-show="$i18n.locale=='zh-CN'">
-                        {{parseFloat(item.ticker.price_cny).toFixed(2)}} CNY
+                    <div class="volume">
+                        {{$t('l.market.amount')}}  {{parseFloat((item.ticker['24h_volume_usd']/item.ticker.price_usd)
+                        *item.ticker.price_btc).toFixed(4)}} BTC (24h)
                     </div>
-                    <div class="price" v-show="$i18n.locale!='zh-CN'">
-                        {{parseFloat(item.ticker.price_usd).toFixed(6)}} USD
-                    </div>
-                </div>
-                <div class="volume" v-show="$i18n.locale=='zh-CN'">
-                    {{$t('l.market.amount')}} {{item.ticker['24h_volume_cny']}} CNY (24h)
-                </div>
-                <div class="volume" v-show="$i18n.locale!='zh-CN'">
-                    {{$t('l.market.amount')}} {{item.ticker['24h_volume_usd']}} USD (24h)
                 </div>
             </div>
             <div style="height: 60px;width: 100%">
@@ -50,17 +50,13 @@
     export default {
         data() {
             return {
-                pages: [
-                    {
-                        page: require('@/components/market/details').default
-                    }
-                ],
+                details: require('@/components/market/details').default,
                 state: 'initial',
             };
         },
         methods: {
             push(page, index) {
-                this.$store.commit('push', {page: page,index});
+                this.$store.commit('push', {page: page,txt:{index:index}});
             },
             loadItem(done) {
                 setTimeout(() => {

@@ -92,7 +92,8 @@ export const l = {
     market:{
         title:'行情',
         rank:'排行',
-        amount:'量'
+        amount:'量',
+        detailsTitle:'交易所'
     },
     contacts:{
         index:{

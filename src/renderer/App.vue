@@ -5,7 +5,8 @@
                          @push-page="$store.state.pageStack.push($event)"
                          @prepop="list"
         ></v-ons-navigator>
-        <div style="width: 100%;height: 100%;position: relative;background-color:rgba(0,0,0,0.2); ">
+        <div id="scan" style="width: 100%;height: 100%;display: none;
+        position: relative;background-color:rgba(0,0,0,0.2); ">
             <div class="zhs_head" style="background-color:rgba(0,0,0,0.4);">
                 <div class="zhs_txt">
                     Scan QR Code
@@ -17,9 +18,11 @@
             <img src="./assets/scan.png"
                  style="position: absolute;width: 200px;height: 200px;top: 50%;margin-top: -120px;left: 50%;margin-left: -100px"/>
             <img src="./assets/ding.png" id="ding"
-                 style="position: absolute;width: 50px;top: 50%;margin-top:120px;left: 50%;margin-left: -25px;"/>
+                 style="position: absolute;width: 50px;top: 50%;margin-top:120px;left: 50%;
+                 margin-left: -25px;"/>
             <img src="./assets/ding_selected.png" id="ding_selected"
-                 style="display:none;position: absolute;width: 50px;top: 50%;margin-top:120px;left: 50%;margin-left: -25px;"/>
+                 style="display:none;position: absolute;width: 50px;
+                 top: 50%;margin-top:120px;left: 50%;margin-left: -25px;"/>
         </div>
         <v-ons-alert-dialog modifier="rowfooter" :visible.sync="alertDialog1Visible">
             <span slot="title">{{$t('l.versionAlert.title')}} {{model.version}}</span>
@@ -53,12 +56,12 @@
                     let model = [];
                     this.$store.state.wallet.list.forEach((v, k) => {
                         this.$g.wallet.getAccount(this, v).then(sum => {
-                            if (sum == 'errorCode') {
+                            if (sum== 'errorCode') {
                                 v.sum=0;
                             } else {
                                 v.sum = sum;
                             }
-                            if(sum=='500'){
+                            if(sum=='errorCode404'){
                                 v.sum=0;
                                 v.is = true;
                             }else{
@@ -120,6 +123,11 @@
             }
         },
         created: function () {
+
+            if (this.$ons.platform.isIPhoneX()) {
+                document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
+                document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
+            }
             this.list();
             setInterval(() => {
                 this.list();

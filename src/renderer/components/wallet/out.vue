@@ -93,101 +93,45 @@
                     return;
                 }
                 if (this.tx.count != '' && this.tx.to != '' && this.tx.fees != '') {
-                    this.$g.wallet.getWallet(this)
-                        .then(model => {
-                            if (model.plaintext != '') {
-                                let formData = new FormData();
-                                formData.append("requestType", "sendMoney");
-                                formData.append("publicKey", this.$store.state.pageText.model.publickey);
-                                formData.append("recipient", this.tx.to);
-                                formData.append("amountNQT", this.tx.count * 100000000);
-                                formData.append("feeNQT", this.tx.fees * 100000000);
-                                if(this.$store.state.pageText.model.chainId){
-                                    formData.append("chain", this.$store.state.pageText.model.chainId);
-                                    formData.append("deadline", 15);
-                                }else{
-                                    formData.append("deadline", 60);
-
+                    if(this.$store.state.pageText.model.publickey!='') {
+                        this.$g.wallet.getWallet(this)
+                            .then(model => {
+                                if (model.plaintext != '') {
+                                    this.sendCoin(model.plaintext,this.$store.state.pageText.model.publickey)
                                 }
-                                if(this.tx.message.trim()!=''){
-                                    formData.append("message", this.tx.message);
-                                    if(this.$store.state.pageText.model.chainId){
-                                        formData.append("messageIsText",true);
-                                        formData.append("messageIsPrunable",true);
-                                        formData.append("referencedTransaction",'');
-
-                                    }
-                                }
-                                this.alertDialog1Visible = true;
-                                this.$http.post(this.$store.state.pageText.model.api + '/nxt', formData).then(v => {
-                                    if (v.status == 200) {
-                                        if(this.$store.state.pageText.model.chainId) {
-
-                                            return {
-                                                prunableAttachmentJSON:v.data.transactionJSON.attachment,
-                                                transactionBytes:this.$ardor.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext)
-                                            };
-                                        }else{
-                                            return this.$nxt.signTransactionBytes(v.data.unsignedTransactionBytes, model.plaintext);
-                                        }
-                                    }
-                                    else {
-                                        this.alertDialog1Visible = false;
-                                        this.$ons.notification.alert({
-                                            'title': this.$t('l.prompt.title'),
-                                            'message':  this.$t('l.error.sent')
-                                        })
-                                    }
-                                }).then(model => {
-                                    let signed = new FormData();
-                                    signed.append("requestType", "broadcastTransaction");
-
-                                    if(this.$store.state.pageText.model.chainId) {
-                                        signed.append("transactionBytes", model.transactionBytes);
-                                        signed.append("prunableAttachmentJSON", JSON.stringify(model.prunableAttachmentJSON));
-                                    }else{
-                                        signed.append("transactionBytes", model);
-                                    }
-                                    this.$http.post(this.$store.state.pageText.model.api + '/nxt', signed).then(v => {
-                                        this.alertDialog1Visible = false;
-                                        let _this = this;
-                                        if(v.data.error){
-                                            this.$ons.notification.alert({
-                                                'title': this.$t('l.prompt.title'),
-                                                'message': v.data.errorDescription,
-                                            })
-                                        }else{
-                                            this.$ons.notification.alert({
-                                                'title': this.$t('l.prompt.title'),
-                                                'message': this.$t('l.prompt.sent'),
-                                                'callback': function () {
-                                                    _this.$store.commit('pop');
-                                                }
-                                            })
-                                        }
-
-                                    }).catch(error => {
-                                        this.alertDialog1Visible = false;
-                                        this.$ons.notification.alert({
-                                            'title': this.$t('l.prompt.title'),
-                                            'message': this.$t('l.error.sent')
-                                        })
-                                    })
-                                }) .catch(error => {
-                                    this.alertDialog1Visible = false;
-                                    this.$ons.notification.alert({
-                                        'title': this.$t('l.prompt.title'),
-                                        'message': this.$t('l.error.sent')
-                                    })
-                                })
-                            }
-                        })
-                        .catch(error => {
-                            this.$ons.notification.alert({
-                                'title': this.$t('l.prompt.title'),
-                                'message': this.$t('l.error.sent')
                             })
-                        })
+                            .catch(error => {
+                                this.$ons.notification.alert({
+                                    'title': this.$t('l.prompt.title'),
+                                    'message': this.$t('l.error.sent')
+                                })
+                            })
+                    }else{
+                        let _this=this;
+                        this.$ons.notification.prompt({
+                            'inputType':'password',
+                            'title': '提示',
+                            'message': '请输入助记词',
+                            'callback': function (phrase) {
+                                if(phrase!=''){
+                                    let publickey=_this.$nxt.secretPhraseToPublicKey(phrase)
+                                    let addr=_this.$nxt.publicKeyToAccountId(publickey,false).split('-');
+                                    addr.splice(0,1)
+                                    let addr2=_this.$store.state.pageText.model.address.split('-')
+                                    addr2.splice(0,1)
+                                    if(addr.toString()==addr2.toString()){
+                                        _this.sendCoin(phrase,publickey)
+                                    }else{
+                                        _this.$ons.notification.alert({
+                                            title: '提示',
+                                            message: '助记词错误',
+                                            buttonLabels:_this.$t('l.prompt.buttonLabels')[1],
+                                        })
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
                 else {
                     this.$ons.notification.alert({
@@ -195,7 +139,90 @@
                         'message': this.$t('l.error.message')
                     })
                 }
+            },
+            sendCoin(plaintext,publickey){
+                let formData = new FormData();
+                formData.append("requestType", "sendMoney");
+                formData.append("publicKey", publickey);
+                formData.append("recipient", this.tx.to);
+                formData.append("amountNQT", this.tx.count * 100000000);
+                formData.append("feeNQT", this.tx.fees * 100000000);
+                if(this.$store.state.pageText.model.chainId){
+                    formData.append("chain", this.$store.state.pageText.model.chainId);
+                    formData.append("deadline", 15);
+                }else{
+                    formData.append("deadline", 60);
+                }
+                if(this.tx.message.trim()!=''){
+                    formData.append("message", this.tx.message);
+                    if(this.$store.state.pageText.model.chainId){
+                        formData.append("messageIsText",true);
+                        formData.append("messageIsPrunable",true);
+                        formData.append("referencedTransaction",'');
 
+                    }
+                }
+                this.alertDialog1Visible = true;
+                this.$http.post(this.$store.state.pageText.model.api + '/nxt', formData).then(v => {
+                    if (v.status == 200) {
+                        if(this.$store.state.pageText.model.chainId) {
+                            return {
+                                prunableAttachmentJSON:v.data.transactionJSON.attachment,
+                                transactionBytes:this.$ardor.signTransactionBytes(v.data.unsignedTransactionBytes, plaintext)
+                            };
+                        }else{
+                            return this.$nxt.signTransactionBytes(v.data.unsignedTransactionBytes, plaintext);
+                        }
+                    }
+                    else {
+                        this.alertDialog1Visible = false;
+                        this.$ons.notification.alert({
+                            'title': this.$t('l.prompt.title'),
+                            'message':  this.$t('l.error.sent')
+                        })
+                    }
+                }).then(model => {
+                    let signed = new FormData();
+                    signed.append("requestType", "broadcastTransaction");
+
+                    if(this.$store.state.pageText.model.chainId) {
+                        signed.append("transactionBytes", model.transactionBytes);
+                        signed.append("prunableAttachmentJSON", JSON.stringify(model.prunableAttachmentJSON));
+                    }else{
+                        signed.append("transactionBytes", model);
+                    }
+                    this.$http.post(this.$store.state.pageText.model.api + '/nxt', signed).then(v => {
+                        this.alertDialog1Visible = false;
+                        let _this = this;
+                        if(v.data.error){
+                            this.$ons.notification.alert({
+                                'title': this.$t('l.prompt.title'),
+                                'message': v.data.errorDescription,
+                            })
+                        }else{
+                            this.$ons.notification.alert({
+                                'title': this.$t('l.prompt.title'),
+                                'message': this.$t('l.prompt.sent'),
+                                'callback': function () {
+                                    _this.$store.commit('pop');
+                                }
+                            })
+                        }
+
+                    }).catch(error => {
+                        this.alertDialog1Visible = false;
+                        this.$ons.notification.alert({
+                            'title': this.$t('l.prompt.title'),
+                            'message': this.$t('l.error.sent')
+                        })
+                    })
+                }) .catch(error => {
+                    this.alertDialog1Visible = false;
+                    this.$ons.notification.alert({
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.error.sent')
+                    })
+                })
             },
             scan() {
                 let _this = this;
@@ -285,17 +312,6 @@
             },
         },
         created: function () {
-            if(this.$store.state.pageText.model.publickey==''){
-                let _this=this;
-                this.$ons.notification.alert({
-                    'title': this.$t('l.prompt.title'),
-                    'message': this.$t('l.out.addr'),
-                    'callback':function () {
-                        _this.$store.commit('pop');
-                    }
-                })
-            }
-
             if(this.$store.state.pageText.to!=''){
                 this.tx.to=this.$store.state.pageText.to;
             }

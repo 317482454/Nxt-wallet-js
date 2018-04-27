@@ -44,7 +44,6 @@
                             item.txt=item.model.en
                         }
                     })
-                    console.log(v.data.log);
                     this.list=v.data.log;
                 }
             });

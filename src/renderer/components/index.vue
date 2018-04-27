@@ -69,8 +69,8 @@
     .tabbar__item {
         .ion-market {
             background: url("../assets/market.png");
-            height: 18px;
-            width: 20px;
+            height: 22px;
+            width: 22px;
             background-size: cover;
         }
         .ion-wallet {
@@ -107,8 +107,8 @@
         color: #2ba2de;
         .ion-market {
             background: url("../assets/market_selected.png");
-            height: 18px;
-            width: 20px;
+            height: 22px;
+            width: 22px;
             background-size: cover;
         }
         .ion-wallet {
@@ -140,6 +140,7 @@
             height: 100%;
             display: none;
         }
+        .center
         .zhs_txt {
             position: absolute;
             width: 100%;

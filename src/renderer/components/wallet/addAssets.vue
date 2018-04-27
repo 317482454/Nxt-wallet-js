@@ -58,7 +58,9 @@
                                 spliceIndex=index;
                             }
                         })
-                        wallet.splice(spliceIndex,1)
+                        if(spliceIndex!=0){
+                            wallet.splice(spliceIndex,1)
+                        }
                     }
                     this.$store.commit('setWalletList2', wallet);
                 })

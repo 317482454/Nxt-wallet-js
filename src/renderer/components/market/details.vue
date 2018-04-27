@@ -1,42 +1,31 @@
 <template>
     <v-ons-page>
         <section>
-            <div class="zhs_head">
+            <div class="zhs_head" >
                 <img src="../../assets/head.png" class="zhs_head"/>
                 <div class="zhs_txt">
-                    Nxt/CNY
+                    {{model.ticker.name}} {{$t('l.market.title')}}
                 </div>
                 <div class="zhs_left" @click="$store.commit('pop')">
                     <img src="../../assets/left.png"/>
                 </div>
             </div>
             <div class="details_List">
-                <div class="title">
-                    Nxt（未来币）
-                </div>
-                <div class="price">
-                    ¥2.01 <span>CNY</span>
-                </div>
-                <div class="percent">
-                    -0.55% (24h)
-                </div>
-                <div class="volume">
-                    量 ¥76,477,364 CNY/1,073 BTC (24h)
-                </div>
-                <div>
+                <a target="_blank" :href="item.href" v-for="item in model.list">
                     <div class="exchangge">
-                        Bittrex,NXT/BTC
-                        <div>
-                            30%
+                        {{item.exchange}} , {{item.trading}}
+                        <div  v-show="$i18n.locale!='zh-CN'">
+                            {{parseFloat(item.usdPrice).toFixed(6)}} USD
+                        </div>
+                        <div  v-show="$i18n.locale=='zh-CN'">
+                            {{parseFloat(item.cnyPrice).toFixed(2)}} CNY
                         </div>
                     </div>
                     <div class="exchangge_price">
-                        价格/交易量（24h）
-                        <div>
-                            ¥2.01/¥76,477,364
-                        </div>
+                        {{parseFloat(item.volume/10000).toFixed(2)}}万{{model.ticker.name}} / {{parseFloat(item.btcPrice).toFixed(4)}} BTC（24h）
+                        <div>{{item.ratio}}</div>
                     </div>
-                </div>
+                </a>
             </div>
             <div style="height: 60px;width: 100%">
             </div>
@@ -49,14 +38,19 @@
         data() {
             return {
                 state: 'initial',
+                model:{}
             };
         },
         methods: {
 
         },
         created: function () {
-
-
+            this.model=this.$store.state.ticker[this.$store.state.pageText.index]
+            let sum=this.model.ticker.price_cny/this.model.ticker.price_usd;
+            this.model.list.forEach(item=> {
+                item.cnyPrice = item.usdPrice * sum;
+                item.btcPrice = item.volume * item.btcPrice.split('e')[0] * 0.00001;
+            })
         }
     };
 </script>
@@ -65,6 +59,11 @@
 
 
     .details_List {
+        a{
+
+            display: block;padding: 8px 0;border-bottom: 1px solid #eee;
+            text-decoration: none;color: #000; padding-left: 16px;
+        }
         .exchangge_price{
             color: #a2a2a2;font-size: 12px;margin-top: 4px;
             div{
@@ -72,13 +71,14 @@
             }
         }
         .exchangge{
-            font-size: 14px;margin-top: 4px;
+            font-size: 14px;
             div{
                 float: right;margin-right: 10px;
             }
         }
         .volume{
             color: #a2a2a2;font-size: 12px;margin-top: 6px;
+
             border-bottom: 1px solid #f2f2f2;height: 26px;
         }
         .percent{
@@ -94,11 +94,9 @@
             margin-top: 4px;color: #000000;margin-top: 20px;
         }
         background: #fff;
-        padding-bottom: 6px;
         border-radius: 4px;
         border-bottom: 1px solid #f2f2f2;
         overflow: hidden;
-        padding-left: 16px;
     }
 </style>
 

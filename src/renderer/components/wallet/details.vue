@@ -78,6 +78,7 @@
                 this.$store.commit('push', {page: this.transactionDetails, txt: this.$store.state.pageText});
             },
             load(){
+                this.list2=[]
                 this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText).then(sum=>{
                     this.modalVisible=false;
                     sum.forEach(v=>{
