@@ -48,6 +48,7 @@
                     }
                     model.txt=this.List[index].txt;
                     model.api=this.List[index].api;
+                    model.apikey=this.List[index].apikey;
                     model.sum=0;
                     if(this.List[index].is){
                          wallet.push(model)
@@ -85,7 +86,7 @@
                                 t=true;
                             }
                         })
-                        this.List.push({txt:key.txt,id:key.id,is:t,api:key.api})
+                        this.List.push({txt:key.txt,id:key.id,is:t,api:key.api,apikey:key.apikey})
                     })
                 }
             }).catch(error=>{

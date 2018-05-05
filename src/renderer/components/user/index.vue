@@ -28,8 +28,13 @@
                 <v-ons-list-item @click="push(contacts)" tappable modifier="chevron" >
                     <img src="../../assets/contacts.png" />{{$t('l.profile.contact')}}
                 </v-ons-list-item>
-                <v-ons-list-item tappable modifier="chevron" @click="push(pages[3].page)">
+                <v-ons-list-item v-if="$store.state.wallet.backed!==0" tappable modifier="chevron" @click="push(pages[3].page)">
                     <img src="../../assets/Phrase.png" />{{$t('l.profile.phrase')}}
+                    <!--{{$store.state.wallet.backed}}-->
+                </v-ons-list-item>
+                <v-ons-list-item v-if="$store.state.wallet.backed===0" style="color: red" tappable modifier="chevron" @click="push(pages[3].page)">
+                    <img src="../../assets/Phrase.png" />{{$t('l.profile.phrase')}} （{{$t('l.profile.back')}}）
+                    <!--{{$store.state.wallet.backed}}-->
                 </v-ons-list-item>
                 <v-ons-list-item v-if="$store.state.wallet.name" tappable modifier="chevron"  @click="out">
                     <img src="../../assets/logOut.png" />{{$t('l.profile.delete')}}
@@ -53,20 +58,20 @@
                                    :title="$t('l.profile.node')">
                    <v-ons-action-sheet-button @click="peers('Nxt')"   icon="md-square-o">Nxt</v-ons-action-sheet-button>
                    <v-ons-action-sheet-button @click="peers('Ardor')"  icon="md-square-o">Ardor</v-ons-action-sheet-button>
-                   <v-ons-action-sheet-button @click="peersSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
+                   <v-ons-action-sheet-button @click="peersSheetVisible=false"  icon="md-square-o">{{$t('l.profile.close')}}</v-ons-action-sheet-button>
                </v-ons-action-sheet>
                <v-ons-action-sheet :visible.sync="actionSheetVisible"
                                    v-if="actionSheetVisible"
                                    cancelable
                                    :title="$t('l.profile.reward')">
                    <v-ons-action-sheet-button @click="rewar(item)" v-for="item in $store.state.wallet.list" icon="md-square-o">{{item.txt}}</v-ons-action-sheet-button>
-                   <v-ons-action-sheet-button @click="actionSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
+                   <v-ons-action-sheet-button @click="actionSheetVisible=false"  icon="md-square-o">{{$t('l.profile.close')}}</v-ons-action-sheet-button>
                </v-ons-action-sheet>
                <v-ons-action-sheet :visible.sync="languageSheetVisible"
                                    cancelable
                                    :title="$t('l.profile.language')">
                    <v-ons-action-sheet-button @click="language(item.val)"  v-for="item in languageList" :modifier="item.val==$store.state.lang?'destructive':''">{{item.txt}}</v-ons-action-sheet-button>
-                   <v-ons-action-sheet-button @click="languageSheetVisible=false"  icon="md-square-o">关闭</v-ons-action-sheet-button>
+                   <v-ons-action-sheet-button @click="languageSheetVisible=false"  icon="md-square-o">{{$t('l.profile.close')}}</v-ons-action-sheet-button>
                </v-ons-action-sheet>
 
            </section>
@@ -136,7 +141,11 @@
             out() {
                 this.$g.wallet.getWallet(this).then(pass => {
                     if (pass.plaintext != '') {
-                        this.$store.commit('logOutWallet');
+                        this.$store.commit('logOutWallet',this);
+                        this.$ons.notification.alert({
+                            'title': this.$t('l.prompt.title'),
+                            'message': this.$t('l.profile.delete')+this.$t('l.profile.success')
+                        })
                     }
                     else {
                         this.$ons.notification.alert({

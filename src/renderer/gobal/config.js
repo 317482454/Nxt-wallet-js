@@ -19,10 +19,11 @@ let wallet = {
         second = second < 10 ? ('0' + second) : second;
         return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
     },
-    setWallet(name, pass, phrase, txt, vue) {
+    setWallet(name, pass, phrase, txt, vue,backed) {
         let publickey=vue.$nxt.secretPhraseToPublicKey(phrase)
         let wallet = {
             name: name,
+            backed:backed,
             phrase: this.encrypt(phrase, pass),
             ardrApi:'http://62.75.159.113:27876',
             list: [
@@ -31,12 +32,12 @@ let wallet = {
                     publickey:publickey ,
                     address: vue.$nxt.publicKeyToAccountId(publickey,false),
                     txt: txt,
+                    apikey:'nxt',
                     api: 'http://174.140.167.239:7876',
                 }
             ]
         };
-        localStorage.setItem('wallet', JSON.stringify(wallet));
-        vue.$store.commit('getWallet');
+        vue.$store.commit('wallet',wallet);
     },
     setWalletAddr(name, pass, addr, txt, vue) {
         let publickey='';
@@ -51,20 +52,21 @@ let wallet = {
                     address: addr,
                     txt: txt,
                     api: 'http://174.140.167.239:7876',
+                    apikey:'nxt'
                 }
             ]
         };
-        localStorage.setItem('wallet', JSON.stringify(wallet));
-        vue.$store.commit('getWallet');
+        vue.$store.commit('wallet',wallet);
     },
     getAccount(vue, model) {
         return new Promise(function (resolve) {
             let api = model.api;
             if (!model.chainId) {
-                api = api + '/nxt?requestType=getAccount&account=' + model.address;
+                api = api + '/'+model.apikey+'?requestType=getAccount&account=' + model.address;
             }else{
-                api = api + '/nxt?requestType=getBalance&account=' + model.address+'&chain='+model.chainId;
+                api = api + '/'+model.apikey+'?requestType=getBalance&account=' + model.address+'&chain='+model.chainId;
             }
+
 
             vue.$http.get(api,{timeout:5000}).then(v => {
                 if (v.status == 200 && v.data) {
@@ -84,9 +86,9 @@ let wallet = {
         return new Promise(function (resolve) {
             let api = model.api;
             if (!model.chainId) {
-                api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address;
+                api = api + '/'+model.apikey+'?requestType=getBlockchainTransactions&account=' + model.address;
             }else{
-                api = api + '/nxt?requestType=getBlockchainTransactions&account=' + model.address+'&chain='+model.chainId;
+                api = api + '/'+model.apikey+'?requestType=getBlockchainTransactions&account=' + model.address+'&chain='+model.chainId;
             }
             _this.getUnconfirmedTransactions(vue, model).then(list=>{
                 vue.$http.get(api,{timeout:5000}).then(v => {
@@ -104,9 +106,9 @@ let wallet = {
         return new Promise(function (resolve) {
             let api = model.api;
             if (!model.chainId) {
-                api = api + '/nxt?requestType=getUnconfirmedTransactions&account=' + model.address;
+                api = api + '/'+model.apikey+'?requestType=getUnconfirmedTransactions&account=' + model.address;
             }else{
-                api = api + '/nxt?requestType=getUnconfirmedTransactions&account=' + model.address+'&chain='+model.chainId;
+                api = api + '/'+model.apikey+'?requestType=getUnconfirmedTransactions&account=' + model.address+'&chain='+model.chainId;
             }
             vue.$http.get(api,{timeout:5000}).then(v => {
                 if (v.status == 200 && v.data) {

@@ -57,7 +57,7 @@
                     let _this = this;
                     this.$ons.notification.alert({
                         'title':this.$t('l.prompt.title'),
-                        'message':'修改联系人成功',
+                        'message':this.$t('l.contacts.update.update'),
                         'callback': function () {
                             _this.$store.commit('pop');
                         }

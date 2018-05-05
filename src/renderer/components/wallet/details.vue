@@ -105,7 +105,7 @@
             }
         },
         mounted: function () {
-            this.$http.get(this.$store.state.pageText.api+"/nxt?requestType=getConstants",{timeout:5000}).then(v => {
+            this.$http.get(this.$store.state.pageText.api+"/"+this.$store.state.pageText.apikey+"?requestType=getConstants",{timeout:5000}).then(v => {
                 this.epochBeginning=v.data.epochBeginning;
                 this.load();
             }).catch(error=>{

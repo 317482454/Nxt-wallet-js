@@ -7,9 +7,12 @@ export const l = {
         node:'节点',
         language:'语言',
         delete:'删除钱包',
+        success:'成功',
         reward:'打赏作者',
+        back:'未备份',
         about:'关于我们',
-        contact:'联系人'
+        contact:'联系人',
+        close:'关闭'
     },
     versionAlert:{
         title:'发现新版本',
@@ -33,9 +36,10 @@ export const l = {
         price:'CNY',
         setting:{
             title:'设置',
-            node:'节点',
+            node:'设置节点',
             del:'删除',
-            cancel:'取消'
+            cancel:'取消',
+            apl:'打开节点钱包'
         },
     },
     import:{
@@ -113,7 +117,8 @@ export const l = {
             add:'添加联系人成功'
         },
         update:{
-            title:'修改'
+            title:'修改',
+            update:'修改联系人成功'
         }
 
     },
@@ -145,6 +150,8 @@ export const l = {
     },
     prompt:{
         title:'提示',
+        api:'是否从服务器接口获取数据',
+        phrase:'请输入助记词',
         password:'请输入你的密码',
         import:'导入成功',
         send:'正在发送...',
@@ -156,6 +163,7 @@ export const l = {
         addr:'导入地址默认显示Nxt'
     },
     error:{
+        phrase:'助记词错误',
         password:'密码错误',
         digits:'密码不能少于9位',
         information:'请输入全部信息',

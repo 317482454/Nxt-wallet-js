@@ -63,6 +63,7 @@
             new Clipboard('.copy', {
                 text: function (trigger) {
                     _this.show=true;
+                    _this.$store.state.wallet.backed=false;
                     setInterval(()=>{
                         _this.show=false;
                     },1000);

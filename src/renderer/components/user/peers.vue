@@ -56,7 +56,7 @@
                     'message': this.$t('l.peers.prompt'),
                     'callback': function (data) {
                         _this.modalVisible=true;
-                        _this.$http.get(data+'/nxt?requestType=getBlockchainStatus',{timeout:3000}).then(v=>{
+                        _this.$http.get(data+'/'+_this.$store.state.pageText.apikey+'?requestType=getBlockchainStatus',{timeout:3000}).then(v=>{
                             if(v.status==200){
                                 if(v.data.services.toString().indexOf('CORS')!=-1&&v.data.services.toString().indexOf('API')!=-1){
                                     _this.peers.unshift({api:data,is:false})
@@ -78,7 +78,8 @@
             let api =this.$store.state.pageText.api;
             this.peers = [];
             let bis=false;
-            this.$http.get( api+'/nxt-proxy?requestType=getPeers&active=true&includePeerInfo=true',{timeout:3000}).then(v => {
+            this.$http.get( api+'/'+this.$store.state.pageText.apikey+'-proxy?requestType=getPeers&active=true&includePeerInfo=true',{timeout:3000}).
+            then(v => {
                 this.modalVisible=false;
                 if (v.status == 200) {
                     v.data.peers.forEach(item => {
@@ -105,8 +106,23 @@
                         this.peers.unshift(model)
                     }
                 }
-            }).catch(error=>{
+            }).
+            catch(error=>{
                 this.modalVisible=false;
+                let _this = this;
+                this.$ons.notification.confirm({
+                    'title': this.$t('l.prompt.title'),
+                    'message': this.$t('l.prompt.api'),
+                    'callback': function (ok) {
+                        if (ok) {
+                            _this.$http.get(_this.$store.state.url+'node?name='+_this.$store.state.pageText.txt,{timeout:3000}).
+                            then(v => {
+                                _this.peers=v.data
+                            })
+
+                        }
+                    }
+                })
             })
         }
     }

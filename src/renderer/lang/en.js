@@ -7,10 +7,13 @@ export const l = {
         node:'Node',
         language:'Language',
         delete:'Delete wallet',
+        success:'Success',
         reward:'Reward author',
         feedback:'Feedback',
+        back:'Not backed up',
         about:'About',
-        contact:'Contacts'
+        contact:'Contacts' ,
+        close:'Close'
     },
     versionAlert:{
         title:'Discover new version',
@@ -34,9 +37,10 @@ export const l = {
         price:'USD',
         setting:{
             title:'Settings',
-            node:'Node',
+            node:'Settings Node',
             del:'Delete',
-            cancel:'Cancel'
+            cancel:'Cancel',
+            apl:'Open node wallet'
         },
     },
     import:{
@@ -115,7 +119,8 @@ export const l = {
             add:'Add contact successfully'
         },
         update:{
-            title:'Modify'
+            title:'Modify',
+            update:'Modify contact successfully'
         }
 
     },
@@ -145,6 +150,8 @@ export const l = {
     },
     prompt:{
         title:'Prompt',
+        api:'Whether to get data from the server interface',
+        phrase:'Please enter Passphrase',
         password:'Please enter your password',
         import:'Import success',
         send:'Sending...',
@@ -157,6 +164,7 @@ export const l = {
 
     },
     error:{
+        phrase:'Wrong Passphrase',
         password:'Wrong password',
         digits:'The password can not be less than 9 digits',
         information:'Please enter all the information',

@@ -60,7 +60,7 @@
             },
             loadItem(done) {
                 setTimeout(() => {
-                    this.$parent.$parent.$parent.$parent.$parent.ticker();
+                    this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.ticker();
                     done();
                 }, 400);
             }

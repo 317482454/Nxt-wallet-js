@@ -6,6 +6,13 @@
                         :rotate="state === 'preaction' && 180" :spin="state === 'action'"></v-ons-icon>
         </v-ons-pull-hook>
         <div class="wallet_index">
+            <!--<div style="text-align: center;position: absolute;top: 20px;width: 100%;font-size: 14px;    z-index: 2;color: #fff">-->
+                <!--{{$store.state.wallet.name}}-->
+            <!--</div>-->
+           <div v-if="$store.state.wallet.name" @click="$store.state.openSide=!$store.state.openSide" style="z-index: 2;height: 60px;width: 60px;position: absolute;top: 0;right: 0">
+               <v-ons-icon style="color: #fff;font-size: 38px;margin-left: 18px;    margin-top: 6px;"
+                           icon="ion-navicon, material:md-menu"></v-ons-icon>
+           </div>
             <v-ons-list class="wallet_index_head"  style="background: #1a99d5">
                 <!--<img src="../../assets/background.png"/>-->
                 <div class="wallet_index_head_warp">
@@ -64,16 +71,20 @@
                                 cancelable
                                 :title="model.txt+' '+$t('l.wallet.setting.title')">
                 <v-ons-action-sheet-button @click="settingPeers" icon="md-square-o">{{$t('l.wallet.setting.node')}}</v-ons-action-sheet-button>
+                <v-ons-action-sheet-button  icon="md-square-o">
+                    <a style="    display: block;text-decoration: none;    color: #0076ff;"
+                      :href="model.api" target="_blank">{{$t('l.wallet.setting.apl')}}</a>
+                </v-ons-action-sheet-button>
                 <v-ons-action-sheet-button @click="settingDel" v-show="model.index!=0" icon="md-square-o">{{$t('l.wallet.setting.del')}}</v-ons-action-sheet-button>
                 <v-ons-action-sheet-button @click="settingSheetVisible=false"  icon="md-square-o">{{$t('l.wallet.setting.cancel')}}</v-ons-action-sheet-button>
             </v-ons-action-sheet>
         </section>
         <!--<v-ons-speed-dial position="bottom right" direction="up"-->
-                          <!--:visible="spdVisible"-->
-                          <!--&gt;-->
-            <!--<v-ons-fab>-->
-                <!--<v-ons-icon icon="ion-jfsc"></v-ons-icon>-->
-            <!--</v-ons-fab>-->
+        <!--:visible="spdVisible"-->
+        <!--&gt;-->
+        <!--<v-ons-fab>-->
+        <!--<v-ons-icon icon="ion-jfsc"></v-ons-icon>-->
+        <!--</v-ons-fab>-->
         <!--</v-ons-speed-dial>-->
     </v-ons-page>
 </template>
@@ -113,7 +124,7 @@
             },
             loadItem(done) {
                 setTimeout(() => {
-                    this.$parent.$parent.$parent.$parent.$parent.list();
+                      this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.list();
                     done();
                 }, 400);
             },

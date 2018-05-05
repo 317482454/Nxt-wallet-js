@@ -7,6 +7,8 @@
                       :index.sync="activeIndex">
         </v-ons-tabbar>
     </v-ons-page>
+
+
 </template>
 
 <script>

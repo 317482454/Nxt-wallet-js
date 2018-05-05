@@ -93,7 +93,7 @@
             }
         },
         created: function () {
-            if (this.$store.state.pageText && this.$store.state.pageText.model.push != '') {
+            if (this.$store.state.pageText&&this.$store.state.pageText.model && this.$store.state.pageText.model.push != '') {
                 this.isOut = true;
             } else {
                 this.isOut = false;

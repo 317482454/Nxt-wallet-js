@@ -10,7 +10,10 @@
                     <img src="../../assets/left.png"/>
                 </div>
             </div>
-            <div class="transaction_sum">
+            <div class="transaction_sum" style="color: red" v-if="$store.state.pageText.address==$store.state.pageText.item.senderRS">
+                {{$store.state.pageText.item.sum}} <span>{{$store.state.pageText.txt}}</span>
+            </div>
+            <div class="transaction_sum" v-if="$store.state.pageText.address!=$store.state.pageText.item.senderRS">
                 {{$store.state.pageText.item.sum}} <span>{{$store.state.pageText.txt}}</span>
             </div>
             <div class="transaction_title">
@@ -92,8 +95,8 @@
                     let _this = this;
                     this.$ons.notification.prompt({
                         'inputType': 'password',
-                        'title': '提示',
-                        'message': '请输入助记词',
+                        'title': this.$t('l.prompt.title'),
+                        'message': this.$t('l.prompt.phrase'),
                         'callback': function (phrase) {
                             if (phrase != '') {
                                 let publickey=_this.$nxt.secretPhraseToPublicKey(phrase)
@@ -108,8 +111,8 @@
                                         phrase)
                                 }else{
                                     _this.$ons.notification.alert({
-                                        title: '提示',
-                                        message: '助记词错误',
+                                        title: this.$t('l.prompt.title'),
+                                        message: this.$t('l.error.phrase'),
                                         buttonLabels:_this.$t('l.prompt.buttonLabels')[1],
                                     })
                                 }
@@ -121,7 +124,6 @@
             }
         },
         mounted: function () {
-
         }
     }
 </script>

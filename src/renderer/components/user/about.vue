@@ -48,7 +48,7 @@
                 this.$store.commit('push', {page: page});
             },
             update(){
-                this.$parent.$parent.update(1)
+                this.$parent.$parent.$parent.$parent.update(1)
             }
         }
     }

@@ -110,8 +110,8 @@
                         let _this=this;
                         this.$ons.notification.prompt({
                             'inputType':'password',
-                            'title': '提示',
-                            'message': '请输入助记词',
+                            'title': this.$t('l.prompt.title'),
+                            'message': this.$t('l.prompt.phrase'),
                             'callback': function (phrase) {
                                 if(phrase!=''){
                                     let publickey=_this.$nxt.secretPhraseToPublicKey(phrase)
@@ -123,8 +123,8 @@
                                         _this.sendCoin(phrase,publickey)
                                     }else{
                                         _this.$ons.notification.alert({
-                                            title: '提示',
-                                            message: '助记词错误',
+                                            title: this.$t('l.prompt.title'),
+                                            message: this.$t('l.error.phrase'),
                                             buttonLabels:_this.$t('l.prompt.buttonLabels')[1],
                                         })
                                     }
@@ -163,7 +163,7 @@
                     }
                 }
                 this.alertDialog1Visible = true;
-                this.$http.post(this.$store.state.pageText.model.api + '/nxt', formData).then(v => {
+                this.$http.post(this.$store.state.pageText.model.api + '/'+this.$store.state.pageText.model.apikey, formData).then(v => {
                     if (v.status == 200) {
                         if(this.$store.state.pageText.model.chainId) {
                             return {
@@ -191,7 +191,7 @@
                     }else{
                         signed.append("transactionBytes", model);
                     }
-                    this.$http.post(this.$store.state.pageText.model.api + '/nxt', signed).then(v => {
+                    this.$http.post(this.$store.state.pageText.model.api + '/'+this.$store.state.pageText.model.apikey, signed).then(v => {
                         this.alertDialog1Visible = false;
                         let _this = this;
                         if(v.data.error){
@@ -209,7 +209,8 @@
                             })
                         }
 
-                    }).catch(error => {
+                    }).
+                    catch(error => {
                         this.alertDialog1Visible = false;
                         this.$ons.notification.alert({
                             'title': this.$t('l.prompt.title'),

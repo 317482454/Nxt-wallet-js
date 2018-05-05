@@ -1,44 +1,77 @@
 <template>
-    <div style="height: 100%;">
-        <v-ons-navigator id="app" swipeable
-                         :page-stack="$store.state.pageStack"
-                         @push-page="$store.state.pageStack.push($event)"
-                         @prepop="list"
-        ></v-ons-navigator>
-        <div id="scan" style="width: 100%;height: 100%;display: none;
+    <v-ons-splitter>
+        <v-ons-splitter-side width="190px"
+                swipeable  collapse="" side="right"
+                :animation="'reveal'"
+                :open.sync="$store.state.openSide">
+            <v-ons-page >
+                <div style="background: rgb(60, 83, 107)"
+                     class="page__background"></div>
+                <div class="app_walletList">
+                    <div @click="setWalletIndex(index)"
+                         :class="index==$store.state.walletList.index?'app_walletList_selectd':''"
+                         v-for="(item,index) in $store.state.walletList.list"
+                         class="app_walletList_div">
+                        <img src="./assets/walleticn.png"/>
+                        {{item.name}}
+                    </div>
+                </div>
+                <div class="app_walletTool">
+                    <div @click="push(createWallet)">
+                        <img src="./assets/createWallet.png"/>
+                        {{$t('l.profile.create')}}
+                    </div>
+                    <div @click="push(importWallet)">
+                        <img src="./assets/importWallet.png"/>
+                        {{$t('l.profile.import')}}
+                    </div>
+                </div>
+            </v-ons-page>
+        </v-ons-splitter-side>
+        <v-ons-splitter-content>
+            <div style="height: 100%;">
+                <v-ons-navigator id="app" swipeable
+                                 :page-stack="$store.state.pageStack"
+                                 @push-page="$store.state.pageStack.push($event)"
+                                 @prepop="list"
+                ></v-ons-navigator>
+                <div id="scan" style="width: 100%;height: 100%;display: none;
         position: relative;background-color:rgba(0,0,0,0.2); ">
-            <div class="zhs_head" style="background-color:rgba(0,0,0,0.4);">
-                <div class="zhs_txt">
-                    Scan QR Code
-                </div>
-                <div id="scan_cancel" class="zhs_left" style="text-indent: 10px">
-                    Cancel
-                </div>
-            </div>
-            <img src="./assets/scan.png"
-                 style="position: absolute;width: 200px;height: 200px;top: 50%;margin-top: -120px;left: 50%;margin-left: -100px"/>
-            <img src="./assets/ding.png" id="ding"
-                 style="position: absolute;width: 50px;top: 50%;margin-top:120px;left: 50%;
+                    <div class="zhs_head" style="background-color:rgba(0,0,0,0.4);">
+                        <div class="zhs_txt">
+                            Scan QR Code
+                        </div>
+                        <div id="scan_cancel" class="zhs_left" style="text-indent: 10px">
+                            Cancel
+                        </div>
+                    </div>
+                    <img src="./assets/scan.png"
+                         style="position: absolute;width: 200px;height: 200px;top: 50%;margin-top: -120px;left: 50%;margin-left: -100px"/>
+                    <img src="./assets/ding.png" id="ding"
+                         style="position: absolute;width: 50px;top: 50%;margin-top:120px;left: 50%;
                  margin-left: -25px;"/>
-            <img src="./assets/ding_selected.png" id="ding_selected"
-                 style="display:none;position: absolute;width: 50px;
+                    <img src="./assets/ding_selected.png" id="ding_selected"
+                         style="display:none;position: absolute;width: 50px;
                  top: 50%;margin-top:120px;left: 50%;margin-left: -25px;"/>
-        </div>
-        <v-ons-alert-dialog modifier="rowfooter" :visible.sync="alertDialog1Visible">
-            <span slot="title">{{$t('l.versionAlert.title')}} {{model.version}}</span>
-            <div class="alertDiv" v-for="item in model.txt">
-                {{item}}
+                </div>
+                <v-ons-alert-dialog modifier="rowfooter" :visible.sync="alertDialog1Visible">
+                    <span slot="title">{{$t('l.versionAlert.title')}} {{model.version}}</span>
+                    <div class="alertDiv" v-for="item in model.txt">
+                        {{item}}
+                    </div>
+                    <template slot="footer">
+                        <v-ons-alert-dialog-button @click="alertDialog1Visible = false">
+                            {{$t('l.versionAlert.footer[0]')}}
+                        </v-ons-alert-dialog-button>
+                        <v-ons-alert-dialog-button  @click="open">
+                            {{$t('l.versionAlert.footer[1]')}}
+                        </v-ons-alert-dialog-button>
+                    </template>
+                </v-ons-alert-dialog>
             </div>
-            <template slot="footer">
-                <v-ons-alert-dialog-button @click="alertDialog1Visible = false">
-                    {{$t('l.versionAlert.footer[0]')}}
-                </v-ons-alert-dialog-button>
-                <v-ons-alert-dialog-button  @click="open">
-                    {{$t('l.versionAlert.footer[1]')}}
-                </v-ons-alert-dialog-button>
-            </template>
-        </v-ons-alert-dialog>
-    </div>
+        </v-ons-splitter-content>
+    </v-ons-splitter>
+
 </template>
 
 <script>
@@ -48,9 +81,18 @@
             return{
                 alertDialog1Visible:false,
                 model:{},
+                importWallet:require('@/components/user/import').default,
+                createWallet:require('@/components/user/create').default
             }
         },
         methods: {
+            setWalletIndex(index){
+                this.$store.commit('setWalletIndex',index)
+            },
+            push(page) {
+                this.$store.state.openSide=false;
+                this.$store.commit('push', {page: page,txt: ''});
+            },
             list() {
                 if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
                     let model = [];
@@ -123,11 +165,6 @@
             }
         },
         created: function () {
-
-            if (this.$ons.platform.isIPhoneX()) {
-                document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
-                document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
-            }
             this.list();
             setInterval(() => {
                 this.list();
@@ -138,6 +175,28 @@
 </script>
 
 <style lang="less">
+    .app_walletList{
+        padding-bottom: 20px;margin-top: 60px;border-bottom: 1px solid rgb(74, 98, 123);
+        .app_walletList_div{
+            font-size: 14px;color: #A5B2BF;line-height: 54px;height: 54px;    overflow: hidden;text-overflow:ellipsis;
+            white-space: nowrap;
+            img{
+                float: left;margin-left: 10px;width: 24px;    margin-top: 14px;margin-right: 10px
+            }
+        }
+        .app_walletList_selectd{
+            background: #2C3E50;
+        }
+    }
+    .app_walletTool{
+        margin-top: 20px;
+        div{
+            font-size: 14px;color: #A5B2BF;line-height: 54px;height: 54px;
+            img{
+                float: left;margin-left: 10px;width: 24px;    margin-top: 18px;margin-right: 10px
+            }
+        }
+    }
     .toolbar {
         position: relative;
     }

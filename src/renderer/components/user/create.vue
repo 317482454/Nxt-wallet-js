@@ -80,7 +80,7 @@
                 if (this.user.name != '' && this.user.password != '' && this.passwordConfirm == this.user.password) {
                     let PassPhrase = this.$g.wallet.generatePassPhrase();
                     this.phrase = PassPhrase;
-                    this.$g.wallet.setWallet(this.user.name, this.user.password, PassPhrase, 'Nxt', this);
+                    this.$g.wallet.setWallet(this.user.name, this.user.password, PassPhrase, 'Nxt', this,0);
                     this.is = false;
                 } else {
                     this.$ons.notification.alert({
@@ -104,6 +104,7 @@
             new Clipboard('.copyAddr', {
                 text: function (trigger) {
                     _this.copyShow = true;
+                    _this.$store.state.wallet.backed=false;
                     setInterval(() => {
                         _this.copyShow = false;
                     }, 1000);

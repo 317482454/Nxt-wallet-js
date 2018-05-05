@@ -5,20 +5,47 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state:{
         wallet:{},
+        walletList:{
+            list:[]
+        },
         currency:'',
         pageStack: [require('@/components/index').default],
         pageText:'',
         ticker:'',
+        openSide:false,
         sum:'',
         lang:'',
         url:'http://www.walletnxt.com:8080/',
-        //url:'http://localhost:3003/',
-        version:'1.0.3'
+        // url:'http://localhost:3003/',
+        version:'1.0.4'
     },
     mutations: {
-        ['getWallet'] (state,password) {
+        ['setWalletIndex'](state,index){
+            state.openSide=false;
+            state.walletList.index=index;
+            localStorage.setItem('walletList', JSON.stringify(state.walletList));
+            state.walletList=JSON.parse(localStorage.getItem('walletList'));
+            if(state.walletList.list[state.walletList.index]){
+                state.wallet=state.walletList.list[state.walletList.index];
+            }else{
+                state.wallet={}
+            }
+            localStorage.setItem('wallet',JSON.stringify(state.wallet));
+        },
+        ['wallet'](state,model){
+            state.walletList.list.push(model);
+            state.walletList.index=state.walletList.list.length-1;
+            localStorage.setItem('walletList', JSON.stringify(state.walletList));
+            localStorage.setItem('wallet',JSON.stringify(model));
             if(localStorage.getItem('wallet')!=null){
                 state.wallet=JSON.parse(localStorage.getItem('wallet'));
+            }
+        },
+        ['getWallet'] (state) {
+            if(localStorage.getItem('walletList')!=null){
+                state.walletList=JSON.parse(localStorage.getItem('walletList'));
+                if(state.walletList.list[state.walletList.index])
+                   state.wallet=state.walletList.list[state.walletList.index];
             }
         },
         ['setWallet'] (state,model) {
@@ -31,11 +58,13 @@ export default new Vuex.Store({
         },
         ['setWalletList2'](state,model){
             state.wallet.list=model
+            state.walletList.list[state.walletList.index]=state.wallet
             localStorage.setItem('wallet',JSON.stringify(state.wallet));
+            localStorage.setItem('walletList', JSON.stringify(state.walletList));
         },
-        ['logOutWallet'](state){
-            state.wallet={};
-            localStorage.removeItem("wallet");
+        ['logOutWallet'](state,vue){
+            state.walletList.list.splice(state.walletList.index,1)
+            vue.$store.commit("setWalletIndex",0);
         },
         ['getLang'](state){
             if(localStorage.getItem('lang')!=null){
