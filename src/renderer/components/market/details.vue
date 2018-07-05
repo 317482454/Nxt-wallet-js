@@ -1,16 +1,15 @@
 <template>
     <v-ons-page>
-        <section>
-            <div class="zhs_head" >
-                <img src="../../assets/head.png" class="zhs_head"/>
-                <div class="zhs_txt">
-                    {{model.ticker.name}} {{$t('l.market.title')}}
-                </div>
-                <div class="zhs_left" @click="$store.commit('pop')">
-                    <img src="../../assets/left.png"/>
-                </div>
+        <v-ons-toolbar style="padding-top: 0px" class="zhs_head">
+            <div class="zhs_left" @click="$store.commit('pop')">
+                <img src="../../assets/left.png"/>
             </div>
-            <div class="details_List">
+            <div class="center" style="font-size: 14px;">
+                {{model.ticker.name}} {{$t('l.market.title')}}
+            </div>
+        </v-ons-toolbar>
+        <section>
+            <div class="details_List" style="padding-top: 60px">
                 <a target="_blank" :href="item.href" v-for="item in model.list">
                     <div class="exchangge">
                         {{item.exchange}} , {{item.trading}}

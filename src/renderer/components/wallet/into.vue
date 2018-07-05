@@ -8,12 +8,24 @@
             <div class="zhs_left" @click="$store.commit('pop')">
                 <img src="../../assets/left.png"/>
             </div>
-            <div class="copy zhs_right" :index="$store.state.pageText.model.publickey">公钥</div>
+            <div v-show="$store.state.pageText.model.publickey!==''" class="copy zhs_right" :index="$store.state.pageText.model.publickey">
+                {{$t('l.into.publickey')}}
+            </div>
         </div>
         <div class="imgSrc">
             <img id="imgSrc"/>
         </div>
-        <v-ons-list class="addr">
+        <v-ons-list class="addr" >
+            <v-ons-list-item modifier="nodivider ">
+                <div class="addr_txt">{{$t('l.into.amount')}}</div>
+                <div class=" addr_val">
+                    <input @change="qr" v-model="sum" style="border: none"
+                           :placeholder="$t('l.into.please')+$t('l.into.amount')"/>
+                </div>
+            </v-ons-list-item>
+
+        </v-ons-list>
+        <v-ons-list class="addr" style=" margin-top: 10px;">
             <v-ons-list-item modifier="nodivider ">
                 <div class="addr_txt">{{$t('l.into.addr')}} </div>
                 <div class=" addr_val">
@@ -41,15 +53,24 @@
         data() {
             return {
                 address: '',
-                copyShow: false
+                copyShow: false,
+                sum:''
+            }
+        },
+        methods: {
+            qr(){
+                let model={
+                    addr:this.$store.state.pageText.model.address,
+                    sum:this.sum,
+                    type:this.$store.state.pageText.model.txt
+                }
+                QRCode.toDataURL(JSON.stringify(model), {errorCorrectionLevel: 'H'}, function (err, url) {
+                    document.getElementById('imgSrc').src = url;
+                })
             }
         },
         mounted: function () {
-            QRCode.toDataURL(this.$store.state.pageText.model.address, {errorCorrectionLevel: 'H'}, function (err, url) {
-                document.getElementById('imgSrc').src = url;
-            })
-        },
-        created: function () {
+            this.qr();
             let _this = this;
             new Clipboard('.copy', {
                 text: function (trigger) {

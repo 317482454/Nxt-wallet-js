@@ -1,5 +1,5 @@
 <template>
-    <v-ons-page>
+    <v-ons-page >
         <v-ons-tabbar swipeable position="auto"
                       :tabs="tabs"
                       :position="position"
@@ -142,7 +142,9 @@
             height: 100%;
             display: none;
         }
-        .center
+        .center{
+            font-size: 14px;
+        }
         .zhs_txt {
             position: absolute;
             width: 100%;
@@ -167,7 +169,6 @@
         }
         .zhs_right{
             position: absolute; width: 20%; height: 100%; top: 0;right: 0; text-align: center;
-
         }
     }
 

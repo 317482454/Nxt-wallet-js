@@ -158,6 +158,9 @@
             rewar(item){
                 this.actionSheetVisible=false;
                 let addr=item.txt.toLocaleUpperCase()+'-X949-FWSQ-BQFD-7B5PQ'
+                if(item.txt=='Mtr'){
+                    addr='MTR-X949-FWSQ-FDZ7-B5PQ-VDR2-BXGH'
+                }
                 this.$store.commit('push', {page: this.pages[4].page,txt:{model:item,to:addr}});
             },
             peers(txt){

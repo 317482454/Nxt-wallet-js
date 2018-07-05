@@ -1,22 +1,14 @@
 <template>
     <v-ons-page>
-
-        <v-ons-pull-hook :action="loadItem" :height="84" @changestate="state = $event.state">
-            <v-ons-icon size="22px" class="pull-hook-spinner"
-                        :icon="state === 'action' ? 'fa-spinner' : 'fa-arrow-down'"
-                        :rotate="state === 'preaction' && 180" :spin="state === 'action'"></v-ons-icon>
-        </v-ons-pull-hook>
-
-        <section >
-            <div class="zhs_head">
-                <img src="../../assets/head.png" class="zhs_head"/>
-                <div class="zhs_txt">
-                    {{$store.state.pageText.txt}} {{$t('l.details.title')}}
-                </div>
-                <div class="zhs_left" @click="$store.commit('pop')">
-                    <img src="../../assets/left.png"/>
-                </div>
+        <v-ons-toolbar style="padding-top: 0px" class="zhs_head">
+            <div class="zhs_left" @click="$store.commit('pop')">
+                <img src="../../assets/left.png"/>
             </div>
+            <div class="center" style="font-size: 14px;">
+                {{$store.state.pageText.txt}} {{$t('l.details.title')}}
+            </div>
+        </v-ons-toolbar>
+        <section style="padding-top: 60px" >
             <div class="details_List" v-for="item in list2" @click="push(item)">
                 <div class="details_List_sum">
                     <div>
@@ -50,7 +42,11 @@
                     </div>
                 </div>
             </div>
-            <div style="height: 60px;width: 100%">
+            <div  v-if="!currentPageIs" style="height: 60px;width: 100%;text-align: center;line-height: 60px">
+
+            </div>
+            <div @click="add" v-show="!modalVisible" v-if="currentPageIs" style="color: #409eff;font-size: 14px;height: 60px;width: 100%;text-align: center;line-height: 60px">
+                {{$t('l.details.next')}}
             </div>
         </section>
         <v-ons-modal :visible="modalVisible" >
@@ -69,22 +65,46 @@
                 state: 'initial',
                 modalVisible:true,
                 epochBeginning:0,
-                transactionDetails:require('@/components/wallet/transactionDetails').default
+                transactionDetails:require('@/components/wallet/transactionDetails').default,
+                currentPage:1,
+                currentPageIs:true
             }
         },
         methods: {
+            add(){
+                if(this.currentPage) {
+                    this.currentPage++;
+                    this.load()
+                }
+            },
             push(item) {
                 this.$store.state.pageText.item=item;
                 this.$store.commit('push', {page: this.transactionDetails, txt: this.$store.state.pageText});
             },
             load(){
-                this.list2=[]
+                this.modalVisible=true;
                 this.$g.wallet.getBlockchainTransactions(this,this.$store.state.pageText).then(sum=>{
                     this.modalVisible=false;
+                    if(sum.length!=15){
+                        this.currentPageIs=false;
+                    }
                     sum.forEach(v=>{
                         v.time=this.$g.wallet.formatDateTime(v.timestamp*1000+(this.epochBeginning - 500));
                         v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(2);
                         v.fee=(parseInt(v.feeNQT)*0.00000001).toFixed(2);
+                        if(this.$store.state.pageText.txt=='Mtr'){
+                            v.time=this.$g.wallet.formatDateTime(v.timestamp+(this.epochBeginning - 500));
+                            v.sum=(parseInt(v.amountMQT)*0.00000001).toFixed(2);
+                            v.fee=(parseInt(v.feeMQT)*0.00000001).toFixed(2);
+                        }
+                        if(this.$store.state.pageText.txt=='Apl'){
+                            v.sum=(parseInt(v.amountATM)*0.00000001).toFixed(2);
+                            v.fee=(parseInt(v.feeATM)*0.00000001).toFixed(2);
+                        }
+                        if(v.senderRS.split("-")[0]!=this.$store.state.pageText.txt.toUpperCase()){
+                            v.senderRS=this.$g.wallet.addrReplace(v.senderRS,this.$store.state.pageText.txt.toUpperCase());
+                            v.recipientRS=this.$g.wallet.addrReplace(v.recipientRS,this.$store.state.pageText.txt.toUpperCase());
+                        }
                         if(v.senderRS!=this.$store.state.pageText.address){
                             v.is=true
                         }else{
@@ -97,20 +117,25 @@
                     this.modalVisible=false;
                 })
             },
-            loadItem(done) {
-                setTimeout(() => {
-                    this.load();
-                    done();
-                }, 400);
-            }
+
         },
         mounted: function () {
-            this.$http.get(this.$store.state.pageText.api+"/"+this.$store.state.pageText.apikey+"?requestType=getConstants",{timeout:5000}).then(v => {
-                this.epochBeginning=v.data.epochBeginning;
-                this.load();
-            }).catch(error=>{
-                this.modalVisible=false
-            })
+            if(this.$store.state.pageText.txt=="Eac"){
+                this.modalVisible=false;
+                this.currentPageIs=false;
+                this.$ons.notification.alert({
+                    'title': this.$t('l.prompt.title'),
+                    'message':'不支持'
+                })
+            }else{
+                this.$http.get(this.$store.state.pageText.api+"/"+this.$store.state.pageText.apikey+"?requestType=getConstants",{timeout:5000}).then(v => {
+                    this.epochBeginning=v.data.epochBeginning;
+                    this.load();
+                }).catch(error=>{
+                    this.modalVisible=false
+                })
+            }
+
         }
     }
 </script>

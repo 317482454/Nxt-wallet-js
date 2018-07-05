@@ -7,6 +7,9 @@
                     <img src="../../assets/left.png"/>
                 </div>
                 {{$t('l.create.title')}}
+                <div @click="$store.commit('pop')" v-show="!is" style="right: 0;text-align: right;">
+                    <v-ons-icon style="font-size: 24px; margin-right: 20px;" icon="md-home"></v-ons-icon>
+                </div>
             </div>
             <section v-show="is" class="create">
                 <v-ons-card>
@@ -31,7 +34,7 @@
                     <section class=" section">
                         <ons-button style="margin: 30px auto;position: relative;  overflow: initial;"
                                     class="button button--large copyAddr" :index="phrase" modifier="large">
-                            {{$t('l.copy.title')}}
+                            {{$t('l.copy.title')}}{{$t('l.create.phrase')}}
                             <div v-show="copyShow" style="position: absolute;bottom: -70px;background: #000;opacity: 0.6;;color: #fff;height: 40px;
             width: 140px;font-size: 12px;line-height: 40px;border-radius: 5px;left: 50%;margin-left: -70px">
                                 {{$t('l.copy.txt')}}

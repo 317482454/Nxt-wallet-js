@@ -41,21 +41,11 @@
             test(index) {
                 this.$nextTick(() => {
                     let wallet = this.$store.state.wallet.list;
-                    let model=JSON.parse(JSON.stringify(wallet[0]));
-                    model.address=this.List[index].txt.toLocaleUpperCase()+wallet[0].address.split('NXT')[1];
-                    if(this.List[index].id!=-1){
-                        model.chainId=this.List[index].id;
-                    }
-                    model.txt=this.List[index].txt;
-                    model.api=this.List[index].api;
-                    model.apikey=this.List[index].apikey;
-                    model.sum=0;
-                    if(this.List[index].is){
-                         wallet.push(model)
-                    }else{
+                    let model = JSON.parse(JSON.stringify(wallet[0]));
+                    if(!this.List[index].is){
                         let spliceIndex=0
                         wallet.forEach((key,index)=>{
-                            if(key.txt==model.txt){
+                            if(key.txt==this.List[index].txt){
                                 spliceIndex=index;
                             }
                         })
@@ -63,7 +53,50 @@
                             wallet.splice(spliceIndex,1)
                         }
                     }
-                    this.$store.commit('setWalletList2', wallet);
+                    else {
+                        if(this.List[index].txt=='Eac'){
+                            this.$g.wallet.getWallet(this)
+                                .then(m => {
+                                    if (m.plaintext != '') {
+                                        model.address = this.$g.wallet.eac(m.plaintext,0);
+                                        model.txt = this.List[index].txt;
+                                        model.api = this.List[index].api;
+                                        model.apikey = this.List[index].apikey;
+                                        model.sum = 0;
+                                        wallet.push(model)
+                                        this.$store.commit('setWalletList2', wallet);
+                                    }else{
+                                        this.List[index].is=false;
+                                    }
+                                })
+                        }else if(this.List[index].txt=='Mtr'){
+                            this.$g.transaction.getPhrase(this, wallet[0].publickey).then(
+                                account=>{
+                                    model.address=this.$mtr.publicKeyToAccountId(account.publickey);
+                                    if (this.List[index].id != -1) {
+                                        model.chainId = this.List[index].id;
+                                    }
+                                    model.txt = this.List[index].txt;
+                                    model.api = this.List[index].api;
+                                    model.apikey = this.List[index].apikey;
+                                    model.sum = 0;
+                                    wallet.push(model)
+                                    this.$store.commit('setWalletList2', wallet);
+                                })
+
+                        } else{
+                            model.address = this.List[index].txt.toLocaleUpperCase() + wallet[0].address.split('NXT')[1];
+                            if (this.List[index].id != -1) {
+                                model.chainId = this.List[index].id;
+                            }
+                            model.txt = this.List[index].txt;
+                            model.api = this.List[index].api;
+                            model.apikey = this.List[index].apikey;
+                            model.sum = 0;
+                            wallet.push(model)
+                            this.$store.commit('setWalletList2', wallet);
+                        }
+                    }
                 })
             },
             titleCase(str) {
@@ -76,7 +109,7 @@
             }
         },
         created: function () {
-            this.$http.get(this.$store.state.url+'candy').then(v => {
+            this.$http.get(this.$store.state.url+'candy',{timeout:5000}).then(v => {
                 this.modalVisible=false;
                 if(v.data){
                     v.data.forEach(key=>{

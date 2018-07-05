@@ -7,13 +7,24 @@ import 'onsenui/css/onsenui.css'
 import 'onsenui/css/onsen-css-components.css'
 import VueOnsen from 'vue-onsenui'
 Vue.use(VueOnsen)
+
+VueOnsen.platform.select('ios')
+
 import nxt from "nxtjs"
 import ardor from "ardorjs"
+import mtr from "mtrjs"
+
 import gobal from "./gobal/config"
 Vue.prototype.$g = gobal;//注册全局方法
+
 Vue.prototype.$nxt = nxt;
 Vue.prototype.$ardor = ardor;
+Vue.prototype.$mtr = mtr;
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
+
+import config from './axios/config'
+
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 store.commit('getWallet')

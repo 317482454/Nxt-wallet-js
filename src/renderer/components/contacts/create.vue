@@ -70,77 +70,12 @@
                 }
             },
             scan() {
-                let _this = this;
-                document.getElementById('ding').style.display = 'block';
-                document.getElementById('ding_selected').style.display = 'none';
-                var app = {
-                    // Application Constructor
-                    initialize: function () {
-                        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-                    },
-                    onDeviceReady: function () {
-                        QRScanner.prepare(onDone); // show the prompt
-                        function onDone(err, status) {
-                            if (err) {
-                                // here we can handle errors and clean up any loose ends.
-                                console.error(err);
-                            }
-                            if (status.authorized) {
-                                var callback = function (err, contents) {
-                                    if (err) {
-                                        console.error(err._message);
-                                    }
-                                    document.getElementById('app').style.display = 'block';
-                                    _this.model.addr = contents;
-                                    QRScanner.disableLight(function (err, status) {
-                                        err && console.error(err);
-                                        console.log(status);
-                                    });
-                                    QRScanner.hide(function(status){
-                                        console.log(status);
-                                    });
-                                };
-
-                                QRScanner.scan(callback);
-                                QRScanner.show(function (status) {
-                                    document.getElementById('ding').onclick = function () {
-                                        QRScanner.enableLight(function (err, status) {
-                                            err && console.error(err);
-                                            document.getElementById('ding_selected').style.display = 'block'
-                                            document.getElementById('ding').style.display = 'none'
-                                        });
-                                    };
-                                    document.getElementById('scan_cancel').onclick = function () {
-                                        QRScanner.disableLight(function (err, status) {
-                                            err && console.error(err);
-                                            console.log(status);
-                                        });
-                                        QRScanner.hide(function(status){
-                                            console.log(status);
-                                        });
-                                        document.getElementById('app').style.display = 'block'
-                                    }
-                                    document.getElementById('ding_selected').onclick = function () {
-                                        QRScanner.disableLight(function (err, status) {
-                                            err && console.error(err);
-                                            console.log(status);
-                                        });
-                                        document.getElementById('ding').style.display = 'block'
-                                        document.getElementById('ding_selected').style.display = 'none'
-                                    };
-                                    document.getElementById('app').style.display = 'none'
-                                });
-                            } else if (status.denied) {
-                                QRScanner.openSettings()
-                            } else {
-                                // we didn't get permission, but we didn't get permanently denied. (On
-                                // Android, a denial isn't permanent unless the user checks the "Don't
-                                // ask again" box.) We can ask again at the next relevant opportunity.
-                            }
-                        }
-                    },
-                };
-                app.initialize();
+                this.$g.app.scan().then(data => {
+                    if(data.addr)
+                        this.model.addr = data.addr;
+                    else
+                        this.model.addr = data
+                })
             }
         }
     }

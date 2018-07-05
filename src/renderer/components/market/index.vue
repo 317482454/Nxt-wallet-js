@@ -1,12 +1,13 @@
 <template>
     <v-ons-page>
-        <section>
-            <div class="zhs_head" style="z-index:99999;">
-                <div class="zhs_txt">
-                    {{$t('l.market.title')}}
-                </div>
+        <v-ons-toolbar style="padding-top: 0px" class="zhs_head">
+
+            <div class="center" style="font-size: 14px;">
+                {{$t('l.market.title')}}
             </div>
-            <div>
+        </v-ons-toolbar>
+        <section>
+            <div style="padding-top: 60px">
                 <v-ons-pull-hook :action="loadItem" :height="84" @changestate="state = $event.state">
                     <v-ons-icon size="22px" class="pull-hook-spinner"
                                 :icon="state === 'action' ? 'fa-spinner' : 'fa-arrow-down'"
@@ -42,6 +43,7 @@
             </div>
             <div style="height: 60px;width: 100%">
             </div>
+
         </section>
     </v-ons-page>
 </template>

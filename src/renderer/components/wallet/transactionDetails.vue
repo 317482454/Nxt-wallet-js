@@ -153,5 +153,8 @@
  }
  .transaction_msg{
      margin: 0 20px 10px 20px;font-size: 12px;color: #4d4d4d;min-height: 60px;border-bottom: 1px solid #bdbdbd;
+     span{
+         word-wrap:break-word;
+     }
  }
 </style>

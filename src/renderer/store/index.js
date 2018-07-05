@@ -4,7 +4,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state:{
-        wallet:{},
+        wallet:{
+            model:{}
+        },
         walletList:{
             list:[]
         },
@@ -15,9 +17,12 @@ export default new Vuex.Store({
         openSide:false,
         sum:'',
         lang:'',
+        changenow:{
+            api:'https://exchange.walletnxt.com/api/v1',
+            key:'6808c1758d0aeebe8e857d1cd46cd33b70c0a30685af4bea785d82f65b920d75',
+        },
         url:'http://www.walletnxt.com:8080/',
-        // url:'http://localhost:3003/',
-        version:'1.0.4'
+        version:'1.0.5'
     },
     mutations: {
         ['setWalletIndex'](state,index){

@@ -45,14 +45,7 @@
                 </div>
             </v-ons-list-item>
         </v-ons-list>
-        <v-ons-list class="out">
-            <v-ons-list-item modifier="nodivider ">
-                <div class="out_div out_div_txt">{{$t('l.out.fees')}}</div>
-                <div class="out_div_input">
-                    <input v-model="tx.fees" :placeholder="$t('l.out.please')+$t('l.out.fees')"/>
-                </div>
-            </v-ons-list-item>
-        </v-ons-list>
+
         <div style="margin: 20px 10px">
             <ons-button class="button button--large" style="background: #ed3554" @click="save" modifier="large">
                 {{$t('l.out.btn')}}
@@ -65,6 +58,26 @@
                 {{$t('l.prompt.send')}}
             </p>
         </v-ons-dialog>
+        <v-ons-alert-dialog class="transaction" modifier="rowfooter"
+                            :visible.sync="dialogVisible">
+            <span slot="title">{{$t('l.out.alertTitle')}}</span>
+            <p>
+                {{$t('l.out.to')}}：{{model.transactionJSON.recipientRS}}
+            </p>
+            <p>
+                {{$t('l.out.count')}}：{{$g.wallet.amount(model.transactionJSON.amountNQT)}} {{$store.state.pageText.model.txt}}
+            </p>
+            <p v-if="!model.minimumFeeFQT">
+                {{$t('l.out.fees')}}：{{$g.wallet.amount(model.transactionJSON.feeNQT)}} {{$store.state.pageText.model.txt}}
+            </p>
+            <p v-if="model.minimumFeeFQT" >
+                {{$t('l.out.fees')}}：{{$g.wallet.amount(model.minimumFeeFQT)}} {{$store.state.pageText.model.txt}}
+            </p>
+            <template slot="footer">
+                <v-ons-alert-dialog-button @click="dialogVisible = false">Cancel</v-ons-alert-dialog-button>
+                <v-ons-alert-dialog-button @click="nextCoin()">Ok</v-ons-alert-dialog-button>
+            </template>
+        </v-ons-alert-dialog>
     </v-ons-page>
 </template>
 
@@ -74,229 +87,60 @@
             return {
                 tx: {
                     count: '',
-                    fees: 1,
                     to: '',
                     message:''
                 },
                 alertDialog1Visible: false,
+                dialogVisible:false,
                 contacts: require('@/components/contacts/contactsIndex').default,
+                model:{transactionJSON:{}},
+                nextInfo:''
             }
         },
         methods: {
             save() {
-                if ((parseFloat(this.tx.count)+parseFloat(this.tx.fees))>parseFloat(this.$store.state.pageText.model.sum)
-                ||(parseFloat(this.tx.count)+parseFloat(this.tx.fees))<1) {
-                    this.$ons.notification.alert({
-                        'title':  this.$t('l.prompt.title'),
-                        'message': this.$t('l.error.amount')
-                    })
-                    return;
-                }
-                if (this.tx.count != '' && this.tx.to != '' && this.tx.fees != '') {
-                    if(this.$store.state.pageText.model.publickey!='') {
-                        this.$g.wallet.getWallet(this)
-                            .then(model => {
-                                if (model.plaintext != '') {
-                                    this.sendCoin(model.plaintext,this.$store.state.pageText.model.publickey)
-                                }
-                            })
-                            .catch(error => {
-                                this.$ons.notification.alert({
-                                    'title': this.$t('l.prompt.title'),
-                                    'message': this.$t('l.error.sent')
-                                })
-                            })
-                    }else{
-                        let _this=this;
-                        this.$ons.notification.prompt({
-                            'inputType':'password',
-                            'title': this.$t('l.prompt.title'),
-                            'message': this.$t('l.prompt.phrase'),
-                            'callback': function (phrase) {
-                                if(phrase!=''){
-                                    let publickey=_this.$nxt.secretPhraseToPublicKey(phrase)
-                                    let addr=_this.$nxt.publicKeyToAccountId(publickey,false).split('-');
-                                    addr.splice(0,1)
-                                    let addr2=_this.$store.state.pageText.model.address.split('-')
-                                    addr2.splice(0,1)
-                                    if(addr.toString()==addr2.toString()){
-                                        _this.sendCoin(phrase,publickey)
-                                    }else{
-                                        _this.$ons.notification.alert({
-                                            title: this.$t('l.prompt.title'),
-                                            message: this.$t('l.error.phrase'),
-                                            buttonLabels:_this.$t('l.prompt.buttonLabels')[1],
-                                        })
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-                else {
-                    this.$ons.notification.alert({
-                        'title':  this.$t('l.prompt.title'),
-                        'message': this.$t('l.error.message')
-                    })
-                }
-            },
-            sendCoin(plaintext,publickey){
-                let formData = new FormData();
-                formData.append("requestType", "sendMoney");
-                formData.append("publicKey", publickey);
-                formData.append("recipient", this.tx.to);
-                formData.append("amountNQT", this.tx.count * 100000000);
-                formData.append("feeNQT", this.tx.fees * 100000000);
-                if(this.$store.state.pageText.model.chainId){
-                    formData.append("chain", this.$store.state.pageText.model.chainId);
-                    formData.append("deadline", 15);
-                }else{
-                    formData.append("deadline", 60);
-                }
-                if(this.tx.message.trim()!=''){
-                    formData.append("message", this.tx.message);
-                    if(this.$store.state.pageText.model.chainId){
-                        formData.append("messageIsText",true);
-                        formData.append("messageIsPrunable",true);
-                        formData.append("referencedTransaction",'');
-
-                    }
-                }
-                this.alertDialog1Visible = true;
-                this.$http.post(this.$store.state.pageText.model.api + '/'+this.$store.state.pageText.model.apikey, formData).then(v => {
-                    if (v.status == 200) {
-                        if(this.$store.state.pageText.model.chainId) {
-                            return {
-                                prunableAttachmentJSON:v.data.transactionJSON.attachment,
-                                transactionBytes:this.$ardor.signTransactionBytes(v.data.unsignedTransactionBytes, plaintext)
-                            };
-                        }else{
-                            return this.$nxt.signTransactionBytes(v.data.unsignedTransactionBytes, plaintext);
+                let bool=this.$g.transaction.verification(this,this.tx,this.$store.state.pageText.model.sum)
+                if(bool)
+                    this.$g.transaction.getPhrase(this, this.$store.state.pageText.model.publickey).
+                    then(account=>{
+                           return this.$g.transaction.sendMoney(this,account,this.tx,this.$store.state.pageText.model)
+                        }).
+                    then(resp=> {
+                        this.dialogVisible = true;
+                        this.model = resp.data;
+                        if(this.$store.state.pageText.model.txt=='Mtr'){
+                            this.model.transactionJSON.amountNQT=this.model.transactionJSON.amountMQT;
+                            this.model.transactionJSON.feeNQT=this.model.transactionJSON.feeMQT
                         }
-                    }
-                    else {
-                        this.alertDialog1Visible = false;
-                        this.$ons.notification.alert({
-                            'title': this.$t('l.prompt.title'),
-                            'message':  this.$t('l.error.sent')
-                        })
-                    }
-                }).then(model => {
-                    let signed = new FormData();
-                    signed.append("requestType", "broadcastTransaction");
-
-                    if(this.$store.state.pageText.model.chainId) {
-                        signed.append("transactionBytes", model.transactionBytes);
-                        signed.append("prunableAttachmentJSON", JSON.stringify(model.prunableAttachmentJSON));
-                    }else{
-                        signed.append("transactionBytes", model);
-                    }
-                    this.$http.post(this.$store.state.pageText.model.api + '/'+this.$store.state.pageText.model.apikey, signed).then(v => {
-                        this.alertDialog1Visible = false;
-                        let _this = this;
-                        if(v.data.error){
+                        if(this.$store.state.pageText.model.txt=='Apl'){
+                            this.model.transactionJSON.amountNQT=this.model.transactionJSON.amountATM;
+                            this.model.transactionJSON.feeNQT=this.model.transactionJSON.feeATM
+                        }
+                        this.nextInfo=resp.transactionBytes;
+                    })
+            },
+            nextCoin(){
+               this.dialogVisible=false;
+               this.alertDialog1Visible = true;
+               this.$g.transaction.broadcastTransaction(this,this.$store.state.pageText.model,this.nextInfo)
+                   .then(resp=>{
+                       this.alertDialog1Visible = false;
+                       if(resp){
+                           let _this=this;
                             this.$ons.notification.alert({
-                                'title': this.$t('l.prompt.title'),
-                                'message': v.data.errorDescription,
-                            })
-                        }else{
-                            this.$ons.notification.alert({
-                                'title': this.$t('l.prompt.title'),
-                                'message': this.$t('l.prompt.sent'),
+                                'title': _this.$t('l.prompt.title'),
+                                'message': _this.$t('l.prompt.sent'),
                                 'callback': function () {
                                     _this.$store.commit('pop');
                                 }
                             })
-                        }
-
-                    }).
-                    catch(error => {
-                        this.alertDialog1Visible = false;
-                        this.$ons.notification.alert({
-                            'title': this.$t('l.prompt.title'),
-                            'message': this.$t('l.error.sent')
-                        })
-                    })
-                }) .catch(error => {
-                    this.alertDialog1Visible = false;
-                    this.$ons.notification.alert({
-                        'title': this.$t('l.prompt.title'),
-                        'message': this.$t('l.error.sent')
-                    })
-                })
+                       }
+                   })
             },
             scan() {
-                let _this = this;
-                document.getElementById('ding').style.display = 'block';
-                document.getElementById('ding_selected').style.display = 'none';
-                var app = {
-                    // Application Constructor
-                    initialize: function () {
-                        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-                    },
-                    onDeviceReady: function () {
-                        QRScanner.prepare(onDone); // show the prompt
-                        function onDone(err, status) {
-                            if (err) {
-                                // here we can handle errors and clean up any loose ends.
-                                console.error(err);
-                            }
-                            if (status.authorized) {
-                                var callback = function (err, contents) {
-                                    if (err) {
-                                        console.error(err._message);
-                                    }
-                                    document.getElementById('app').style.display = 'block';
-                                    _this.tx.to = contents;
-                                    QRScanner.disableLight(function (err, status) {
-                                        err && console.error(err);
-                                        console.log(status);
-                                    });
-                                    QRScanner.hide(function(status){
-                                        console.log(status);
-                                    });
-                                };
-
-                                QRScanner.scan(callback);
-                                QRScanner.show(function (status) {
-                                    document.getElementById('ding').onclick = function () {
-                                        QRScanner.enableLight(function (err, status) {
-                                            err && console.error(err);
-                                            document.getElementById('ding_selected').style.display = 'block'
-                                            document.getElementById('ding').style.display = 'none'
-                                        });
-                                    };
-                                    document.getElementById('scan_cancel').onclick = function () {
-                                        QRScanner.disableLight(function (err, status) {
-                                            err && console.error(err);
-                                            console.log(status);
-                                        });
-                                        QRScanner.hide(function(status){
-                                            console.log(status);
-                                        });
-                                        document.getElementById('app').style.display = 'block'
-                                    }
-                                    document.getElementById('ding_selected').onclick = function () {
-                                        QRScanner.disableLight(function (err, status) {
-                                            err && console.error(err);
-                                            console.log(status);
-                                        });
-                                        document.getElementById('ding').style.display = 'block'
-                                        document.getElementById('ding_selected').style.display = 'none'
-                                    };
-                                    document.getElementById('app').style.display = 'none'
-                                });
-                            } else if (status.denied) {
-                                QRScanner.openSettings()
-                            } else {
-                                // we didn't get permission, but we didn't get permanently denied. (On
-                                // Android, a denial isn't permanent unless the user checks the "Don't
-                                // ask again" box.) We can ask again at the next relevant opportunity.
-                            }
-                        }
-                    },
-                };
-                app.initialize();
+                this.$g.app.scan().then(data=>{
+                    this.tx.to=data;
+                })
             },
             push(){
                 this.$store.state.pageText.model.push = 'out';
@@ -316,11 +160,19 @@
             if(this.$store.state.pageText.to!=''){
                 this.tx.to=this.$store.state.pageText.to;
             }
+            if(this.$store.state.pageText.sum!=''){
+                this.tx.count=this.$store.state.pageText.sum;
+            }
         }
     }
 </script>
 
 <style scoped lang="less">
+    .transaction{
+        p{
+            font-size: 12px;margin-left: 10px;text-align: left
+        }
+    }
     .scan{
         width: 28px;margin-top: 16px;margin-left: 10px;
     }

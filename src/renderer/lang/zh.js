@@ -34,13 +34,17 @@ export const l = {
         send:'发送',
         details:'明细',
         price:'CNY',
+        stateList:['未激活','出租中','节点故障'],
+        block:'区块',
         setting:{
             title:'设置',
             node:'设置节点',
             del:'删除',
             cancel:'取消',
-            apl:'打开节点钱包'
+            apl:'打开节点钱包',
+            lease:'余额出租'
         },
+        scan:'请添加资产:'
     },
     import:{
         title:'导入钱包',
@@ -71,16 +75,20 @@ export const l = {
         quantity:'数量',
         out:'转出',
         into:'转入',
-        fee:'手续费'
+        fee:'手续费',
+        next:'下一页'
     },
     phrase:{
         title:'导出助记词',
         title1:'请保存好你的助记词',
         txt:'这12个单词，是你唯一能恢复你的钱包，正确地写在纸上，并保存在一个安全的地方。'
     },
-    into:{
-      title:'接收',
-      addr:'地址',
+    into: {
+        title: '接收',
+        addr: '地址',
+        publickey: '公钥',
+        amount: '金额',
+        please:'请输入'
     },
     out:{
         title:'发送',
@@ -91,7 +99,8 @@ export const l = {
         fees:'手续费',
         please:'请输入',
         btn:'确定发送',
-        addr:'请使用助记词导入，再进行该操作'
+        addr:'请使用助记词导入，再进行该操作',
+        alertTitle:'交易明细'
     },
     market:{
         title:'行情',
@@ -121,6 +130,86 @@ export const l = {
             update:'修改联系人成功'
         }
 
+    },
+    exchange:{
+        details:{
+            title:'币币交易明细',
+            status:'状态',
+            statuses:{
+                new:'新的交易',
+                waiting:'等待交易',
+                confirming:'确认交易中',
+                exchanging:'交换进行中',
+                sending:'交换币种发送中',
+                finished:'交易成功',
+                failed:'交易失败',
+                refunded:'退款',
+                expired:'过期'
+            },
+            id:'交易ID',
+            sendAmount:'付款币数',
+            receiveAmount:'接收币数',
+            payinAddress:'付款地址',
+            fee:'手续费',
+            payoutAddress:'接收地址',
+            updatedAt:'时间',
+            copy:'复制',
+            del:'删除记录',
+            confirm:'本地记录，删除无法恢复',
+            none:'无历史记录'
+        },
+        index:{
+            title:'币币交易所',
+            records:'交易记录',
+            type:'交易类型',
+            sendCoin:'发送币种',
+            sendAmount:'发送币数',
+            please:'请输入',
+            minAmount:'最少数量',
+            receiveCoin:'接收币种',
+            receiveAmount:'接收币数',
+            receiveAddr:'接收地址',
+            save:'确定交换',
+            typeItems: [
+                {text: '买', value: 'buy'},
+                {text: '卖', value: 'sell'},
+            ],
+            exchangeError:'请修改发送币数',
+            count:['你的','数量不够'],
+            buy01:'交易订单生成成功,前往历史记录查询',
+            buy02:'交易订单生成成功,是否前往转账',
+            buyError:'参数错误，请重新尝试',
+            message:'第三方交易所：Changenow，币币转账时间大约5-60分钟',
+            click:'点击获取',
+            not:'交易对不支持'
+        }
+    },
+    lease:{
+        balance:{
+            title:'余额出租',
+            recipient:'出租账号',
+            period:'出租区块数',
+            save:'确定出租',
+            account:{
+                title:'出租账号信息',
+                addr:'地址',
+                id:'账号id',
+                lessorsLength:'出租人数',
+                lessorsSum:'出租数量'
+            },
+            current:{
+                title:'当前出租信息',
+                addr:'承租人地址',
+                id:'承租人id',
+                heightFrom:'出租高度',
+                heightTo:'到期高度',
+                info:'无出租信息'
+            },
+            periodError:'请输入正确的出租区块数',
+            errorCode:'请输入正确的出租账号地址',
+            nodeError:'节点错误',
+            success:'出租成功'
+        }
     },
     transactionDetails:{
         title:'交易记录',
@@ -168,7 +257,8 @@ export const l = {
         digits:'密码不能少于9位',
         information:'请输入全部信息',
         message:'请输入正确的内容',
-        amount:'请输入正确的金额',
+        amount:'请输入正确的数量',
+        addr:'请输入正确的地址',
         sent:'发送失败',
         node:'节点错误'
     }

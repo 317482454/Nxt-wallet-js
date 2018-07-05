@@ -80,15 +80,8 @@
                 this.actionSheetVisible = false;
             },
             out() {
-                let to='';
-                this.model.addr.split('-').forEach((item,index)=>{
-                    if(index!=0){
-                        to=to+'-'+item;
-                    }else{
-                        to=this.$store.state.pageText.model.txt.toLocaleUpperCase()+to;
-                    }
-                })
-                this.$store.state.pageText.model.to =to
+                this.$store.state.pageText.model.to =this.$g.wallet.addrReplace(
+                    this.model.addr,this.$store.state.pageText.model.txt);
                 this.$store.commit('pop');
             }
         },

@@ -35,13 +35,17 @@ export const l = {
         send:'Send',
         details:'Details',
         price:'USD',
+        stateList:['Not active','Leaseding','Node failure'],
+        block:'Block',
         setting:{
             title:'Settings',
             node:'Settings Node',
             del:'Delete',
             cancel:'Cancel',
-            apl:'Open node wallet'
+            apl:'Open node wallet',
+            lease:'Lease balance'
         },
+        scan:'Please add assets:'
     },
     import:{
         title:'Import wallet',
@@ -73,7 +77,9 @@ export const l = {
         quantity:'amount',
         out:'send',
         into:'receive',
-        fee:'fee'
+        fee:'fee',
+        next:'Next page'
+
     },
     phrase:{
         title:'Import passphrase',
@@ -83,6 +89,9 @@ export const l = {
     into:{
         title:'Receive',
         addr:'Address',
+        amount: 'Amount',
+        publickey: 'Publickey',
+        please:'Please enter'
     },
     out:{
         title:'Send',
@@ -93,7 +102,8 @@ export const l = {
         fees:'Fee',
         please:'Please enter',
         btn:'Send',
-        addr:'Please use Passphrase import，Then do this'
+        addr:'Please use Passphrase import，Then do this',
+        alertTitle:'Transaction'
     },
     market:{
         title:'Market',
@@ -101,6 +111,7 @@ export const l = {
         amount:'Amount',
         detailsTitle:'Exchange'
     },
+
     contacts:{
         index:{
             note:'Note',
@@ -123,6 +134,86 @@ export const l = {
             update:'Modify contact successfully'
         }
 
+    },
+    exchange:{
+        details:{
+            title:'Transaction details',
+            status:'status',
+            statuses:{
+                new:'New',
+                waiting:'Waiting',
+                confirming:'Confirming',
+                exchanging:'Exchanging',
+                sending:'Sending',
+                finished:'Finished',
+                failed:'Failed',
+                refunded:'Refunded',
+                expired:'Expired'
+            },
+            id:'ID',
+            sendAmount:'Send Amount',
+            receiveAmount:'Receive Amount',
+            payinAddress:'Pay in Address',
+            payoutAddress:'Pay out Address',
+            fee:'Fee',
+            updatedAt:'Updated',
+            copy:'Copy',
+            del:'Delete Record',
+            confirm:'Local record, delete cannot be recovered',
+            none:'No history'
+        },
+        index:{
+            title:'Coin Exchange',
+            records:'Records',
+            type:'Type',
+            sendCoin:'Send Coin',
+            sendAmount:'Send Amount',
+            please:'Please enter',
+            minAmount:'Min Amount',
+            receiveCoin:'Receive Coin',
+            receiveAmount:'Receive Amount',
+            receiveAddr:'Receive Addr',
+            save:'Confirm exchange',
+            typeItems: [
+                {text: 'Buy', value: 'buy'},
+                {text: 'Sell', value: 'sell'},
+            ],
+            exchangeError:'Please modify Send Amount',
+            count:['Your','Not enough'],
+            buy01:'Transaction order generated success,Go to history query',
+            buy02:'Transaction order generated success,Whether to go to transfer',
+            buyError:'Parameter error, please try again',
+            message:'Third-party exchange: Changenow, currency transfer time is about 5-60 minutes',
+            click:'Click to get',
+            not:' Transaction is not supported'
+        }
+    },
+    lease:{
+        balance:{
+            title:'Lease Balance',
+            recipient:'Lease Account',
+            period:'Lease Block',
+            save:'Save Lease',
+            account:{
+                title:'Lease Account Info',
+                addr:'Addr',
+                id:'Account id',
+                lessorsLength:'Lease Count',
+                lessorsSum:'Lease Sum'
+            },
+            current:{
+                title:'Lease Info',
+                addr:'Tenant addr',
+                id:'Tenant id',
+                heightFrom:'Height From',
+                heightTo:'Height To',
+                info:'No Lease information'
+            },
+            periodError:'Please enter the lease number of rental blocks',
+            errorCode:'Please enter the lease rental account address',
+            nodeError:'Node Error',
+            success:'Lease Success'
+        }
     },
     transactionDetails:{
         title:'Transaction Record',
@@ -170,6 +261,7 @@ export const l = {
         information:'Please enter all the information',
         message:'Please enter the correct content',
         amount:'Please enter the correct amount',
+        addr:'Please enter the correct address',
         sent:'Failed to send',
         node:'Wrong node'
     }

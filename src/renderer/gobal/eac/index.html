@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> <meta charset="utf-8"> </head>
+<body>
+
+<H1>STEP 1</H1>
+Copy the private key (WIF format) of your your EAC address here and then click on START button.<BR>
+The private key is used only by javascript code in your web browser, it not leave your computer.<BR><BR>
+<input type="text" size="64" id="privKey" placeholder="Paste a private key here">
+<button type="button" id="start" onClick="start()">START</button>
+<BR>
+
+<pre>
+<output id="result1"></output>
+</pre>
+
+<output id="step2"></output>
+
+<pre>
+<B><output name="result2" id="result2"></output></B>
+</pre>
+
+<output id="step3"></output>
+
+<div><pre>
+<B><output id="result3"></output></B>
+</pre></div>
+
+<output id="step4"></output>
+
+<div><pre>
+<B><output id="result4"></output></B>
+</pre></div>
+
+<output id="step5"></output>
+
+<div><pre>
+<B><output id="result5"></output></B>
+</pre></div>
+
+
+<script type="text/javascript" src="crypto-min.js"></script>
+<script type="text/javascript" src="crypto-sha256.js"></script>
+<script type="text/javascript" src="crypto-sha256-hmac.js"></script>
+<script type="text/javascript" src="ripemd160.js"></script>
+<script type="text/javascript" src="jsbn.js"></script>
+<script type="text/javascript" src="ellipticcurve.js"></script>
+<script type="text/javascript" src="bitTrx.js"></script>
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="eaclib.js"></script>
+<script type="text/javascript" src="sha256.js"></script>
+
+
+<script type="text/javascript">
+
+	// outputs
+	var j = 1;                  
+	function addKids(){
+		j++;	
+		var div = document.createElement('div');
+		div.innerHTML = '<div><input type="text" size="55" id="addr_'+j+'" name="addrs[]" placeholder="Address #'+j+'" required="required"><input size="7" name="amts[]" id="amt_'+j+'" type="text" placeholder="EAC #'+j+'" required="required"><button type="button" onClick="removeKids(this)">-</button><button type="button" id="add_kids()" onClick="addKids()">+</button></div>';
+		document.getElementById('indiv').appendChild(div);
+	}
+
+	function removeKids(div) {	
+		document.getElementById('indiv').removeChild(div.parentNode.parentNode);
+		j--;
+	}
+
+	// return hex-string in reversed byte order
+	function reverse_endian(s) {
+		var rts = "";
+		var sz = s.length;
+		if (sz % 2)
+			return "error";
+		for (var k=0; k<(sz/2); k++)
+		rts += s.substring(sz-2*(k+1), sz-2*k);
+		return rts;
+	}
+
+	var C = Crypto,
+	util = C.util,
+	charenc = C.charenc,
+	UTF8 = charenc.UTF8,
+	Binary = charenc.Binary;
+
+	let keyPress="yeah yet present pencil history position crumble needle root allow rant second"
+
+    var bytes = Crypto.SHA256(keyPress, { asBytes: true });
+    var btcKey = new Bitcoin.ECKey(bytes);
+    var bitcoinAddress = btcKey.getBitcoinAddress();
+    var privWif = btcKey.getBitcoinWalletImportFormat();
+    console.log(privWif);
+    console.log(bitcoinAddress);
+
+    function autodetectCompression(key) {
+		var flag = key.substring(0,1);
+		return ( flag != "8" );
+	}
+
+	function validatePrivkey(key) {
+		var isCompressed = autodetectCompression(key);
+		var akey = Bitcoin.Base58.decode(key);
+           var hkey = util.bytesToHex(akey);
+           var purekey = hkey.substring(2,66);
+           var privKey = new Bitcoin.ECKey(purekey);
+           privKey.setCompressed(isCompressed);
+		var wif = privKey.getBitcoinWalletImportFormat();
+		return (wif == key);
+	}
+
+	function getAddress(key) {
+		var isCompressed = autodetectCompression(key);
+		var akey = Bitcoin.Base58.decode(key);
+           var hkey = util.bytesToHex(akey);
+           var purekey = hkey.substring(2,66);
+           var privKey = new Bitcoin.ECKey(purekey);
+           privKey.setCompressed(isCompressed);
+           return privKey.getBitcoinAddress();
+	}
+
+	function validateAddress(address) {
+		var pubKey = Bitcoin.Base58.decode(address);
+		if (pubKey.length != 25) 
+			return false;
+		if (pubKey[0] != 93)
+			return false;
+		var cksum = pubKey.slice(pubKey.length-4)
+	 	var rest = pubKey.slice(0, pubKey.length-4);
+		var strch1 = util.bytesToHex(cksum);
+		var strrest = util.bytesToHex(rest);
+		var hash1 = sha256(rest);
+		var rehex = new BigInteger(hash1, 16);
+		var arr = rehex.toByteArray();
+		for (var i=0; i<arr.length; i++)
+			if (arr[i]<0)
+				arr[i] += 256;
+		var omitZero = (arr[0] == 0) ? arr.slice(1,arr.length) : arr;
+		var strch2 = sha256(omitZero).substring(0,8);
+		return (strch1 == strch2);
+	}
+
+	var privKeyString = "";
+	var address;
+	var txcnt = 0;
+	var seltx = 0;
+	var myArr;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+    		if (this.readyState == 4 && this.status == 200) {
+        		myArr = JSON.parse(this.responseText);
+			document.getElementById("result1").innerHTML += "<H3>Unspent transactions:</H3>";
+        		var total = Number("0.00000000");
+        		for (var i in myArr.unspent_outputs){
+           		var amount = Number(myArr.unspent_outputs[i].value)/(1e+8);
+           		var confs = myArr.unspent_outputs[i].confirmations;
+           		document.getElementById("result1").innerHTML += "<input id='checkBox_" + i + "' type='checkbox' onClick='checkIt()' value='" +  amount + "'>" + amount + "  (" + confs + " confirmations)" + "</input><BR>";
+				total += Number(myArr.unspent_outputs[i].value)/(1e+8);
+				txcnt++;
+			}
+			document.getElementById("result1").innerHTML += "<BR><B>total balance: " + total + "</B>";
+		}
+	};
+
+	function start() {
+		privKeyString = document.getElementById('privKey').value;
+    		if (!(validatePrivkey(privKeyString))) {
+			document.getElementById("result1").innerHTML = '<FONT color="red"><B>Error: invalid private key!</B></FONT>'; return; }
+		address = getAddress(privKeyString);
+		if (!(validateAddress(address))) {
+			document.getElementById("result1").innerHTML = '<FONT color="red"><B>Error: invalid address!</B></FONT>'; return; }
+		document.getElementById("result1").innerHTML = "Your EarthCoin address is: <B>" + address + "</B><BR>";
+		var request = "https://chainz.cryptoid.info/eac/?q=getinfo/api.dws?q=unspent&key=8a2802e62c32&active=" + address;
+   		xmlhttp.open("GET", request, true);
+		xmlhttp.send(); 
+		document.getElementById("step2").innerHTML = '<HR><H1>STEP 2</H1>Select some source transactions in the list above or <button type="button" id="selall" onClick="selall()">select all</button> <BR>';
+	}
+
+	var sumin; 
+	function checkIt() {
+		sumin = 0;
+		seltx = 0;
+		for (var i = 0; i< txcnt; i++){
+			if (document.getElementById("checkBox_"+i).checked) {
+				sumin += Number(document.getElementById("checkBox_"+i).value);
+           		seltx++;
+			}
+		}
+		document.getElementById("result2").innerHTML = "Selected amount: " + sumin;
+		document.getElementById("step3").innerHTML = '<HR><H1>STEP 3</H1>Paste the receiver addresses and amounts to sent, and then click on this button <button type="button" id="start" onClick="create()">CREATE TRANSACTION</button><BR>';
+		document.getElementById("step3").innerHTML += '<div id="indiv"><div><div><input type="text" size="55" id="addr_1" name="addrs[] " placeholder="Address #1" required="required"><input size="7" name="amts[]" id="amt_1" type="text" placeholder="ETC #1" required="required"><button type="button" id="add_kids()" onClick="addKids()">+</button></div> </div></div>';
+	}
+
+	function selall() {
+		for (var i = 0; i< txcnt; i++)
+		document.getElementById("checkBox_"+i).checked = true;
+		checkIt();
+	}
+
+
+	function create() {
+		if (sumin<=0) {
+			document.getElementById('result3').innerHTML = "Selectet unspent balance must be a positive number! "; return; }
+
+		var response = "02000000";
+
+		// count of inputs
+		response += ('00'+parseInt(seltx).toString(16)).slice(-2);
+
+		// all inputs
+		for (var i = 0; i< txcnt; i++)
+			if (document.getElementById("checkBox_"+i).checked) {
+				response += reverse_endian(myArr.unspent_outputs[i].tx_hash);
+				response += reverse_endian(('00000000'+(parseInt(Number(myArr.unspent_outputs[i].tx_ouput_n)).toString(16))).slice(-8));
+				response += "19"+myArr.unspent_outputs[i].script;
+				response += "ffffffff";
+		}
+        
+		// add count of outputs
+		response += ('00'+parseInt(j).toString(16)).slice(-2);
+
+		var sumsent = 0;
+    
+		// do for each output
+		for (var a=1; a<=j; a++) {
+			var val = document.getElementById("amt_"+a).value;
+			if ( isNaN(val) || (Number(val) <= 0) ) {
+				document.getElementById('result3').innerHTML = "Error in amt_" +  a + " - must be a positive number - " + val; return; }
+			// value of transaction in EAC*10^8    
+			var satoshi = ('0000000000000000'+(Number(val) * 100000000).toString(16)).slice(-16);
+			response += reverse_endian(satoshi); 
+			// for a fee calculation
+			sumsent += Number(val);
+ 			// destination EAC address in hexadecimal code
+			var addr = document.getElementById("addr_"+a).value;
+			if (!(validateAddress(addr))) {
+				document.getElementById('result3').innerHTML = "Error in addr_" +  a + " - must be a valid EarthCoin address"; return; }
+
+			var plain = util.bytesToHex(Bitcoin.Base58.decode(addr));
+			if ( (plain.length != 50) ) {
+				document.getElementById('result3').innerHTML = "Error in addr_" +  a + " - must be a valid EarthCoin address"; return; }
+			var ckey = plain.substring(2, 42);      // this part of public key is required for transaction
+			response += "1976a914" + ckey + "88ac";
+		}
+
+		// add the finalize constant 
+		response += "0000000000";
+		document.getElementById("result3").innerHTML = response;
+
+		var fee = sumin - sumsent;
+		document.getElementById("result3").innerHTML = '<BR><BR>Calculated fee: ' + fee + '<BR>';
+		if (fee<0)
+                    document.getElementById("result3").innerHTML += '<FONT color="red"> Error. Fee must not be negative"!</FONT><BR>';
+                else {
+                    if (fee>0)
+                        document.getElementById("result3").innerHTML += '<font color="red"> Please, remember all unspent coins will be spent as a fee. You must add your own EAC address as the receiver of the rest of the balance.</font> <BR>';
+                    document.getElementById("step4").innerHTML = '<HR><H1>STEP 4</H1>Now sign the transaction with the private key <button type="button" id="sign" onClick="sign()">SIGN TRANSACTION</button><BR>';
+                }		
+	}
+
+
+	var signedTx;
+
+	function sign() {
+		var trx = bitjs.transaction();
+
+		// all inputs
+		for (var i = 0; i< txcnt; i++)
+			if (document.getElementById("checkBox_"+i).checked) {
+				var txid = myArr.unspent_outputs[i].tx_hash;
+				var index = myArr.unspent_outputs[i].tx_ouput_n;
+				var script = myArr.unspent_outputs[i].script;
+				trx.addinput(txid,index,script);
+		}
+
+		// do for each output
+		for (var a=1; a<=j; a++) {
+			var val = document.getElementById("amt_"+a).value;
+			if ( isNaN(val) || (Number(val) <= 0) ) {
+				document.getElementById('result3').innerHTML = "Error in amt_" +  a + " - must be a positive number - " + val; return; }
+			var addr = document.getElementById("addr_"+a).value;
+			if (!(validateAddress(addr))) {
+				document.getElementById('result4').innerHTML = "Error in addr_" +  a + " - must be a valid EarthCoin address"; return; }
+			var address = addr;
+			var value = val;
+			trx.addoutput(address,value);
+		}
+		var wif = privKeyString;
+		signedTx = trx.sign(wif,1); //SIGHASH_ALL DEFAULT 1
+		document.getElementById('result4').innerHTML = signedTx; 
+		document.getElementById("step5").innerHTML = '<HR><H1>STEP 5</H1>If you are sure what are you doing, you cat broadcast the signed transaction.<BR> <button type="button" id="broadcast" onClick="broadcast()">SEND TRANSACTION</button><BR>';
+	}
+
+	function broadcast() {
+		var broadcastURL = "http://80.211.198.20:7000/sendrawtransaction?tx=" + signedTx;
+		var request = new XMLHttpRequest();
+                request.open('GET', broadcastURL, true);
+                request.onload = function () {
+                    if (this.response == "There was an error. Check your console.")
+                        document.getElementById('result5').innerHTML = "<FONT color='red'><B>There was an error in the transaction broadcasting.</B></FONT>";
+                    else
+                        document.getElementById('result5').innerHTML = "Your transaction ID is:<BR>" + this.response;
+                }           
+                request.send();                
+        }
+
+
+</script>
+
+</body>
+</html>

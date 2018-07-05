@@ -1,5 +1,5 @@
 <template>
-    <v-ons-splitter>
+    <v-ons-splitter style="        background-color:transparent !important;">
         <v-ons-splitter-side width="190px"
                 swipeable  collapse="" side="right"
                 :animation="'reveal'"
@@ -28,15 +28,17 @@
                 </div>
             </v-ons-page>
         </v-ons-splitter-side>
-        <v-ons-splitter-content>
-            <div style="height: 100%;">
+        <v-ons-splitter-content style="        background-color:transparent !important;
+">
+            <div style="height: 100%;        background-color:transparent !important;
+width: 100%">
                 <v-ons-navigator id="app" swipeable
                                  :page-stack="$store.state.pageStack"
                                  @push-page="$store.state.pageStack.push($event)"
                                  @prepop="list"
                 ></v-ons-navigator>
                 <div id="scan" style="width: 100%;height: 100%;display: none;
-        position: relative;background-color:rgba(0,0,0,0.2); ">
+        position: relative;        background-color:transparent !important; ">
                     <div class="zhs_head" style="background-color:rgba(0,0,0,0.4);">
                         <div class="zhs_txt">
                             Scan QR Code
@@ -97,15 +99,17 @@
                 if (this.$store.state.wallet.name&&this.$store.state.wallet.list) {
                     let model = [];
                     this.$store.state.wallet.list.forEach((v, k) => {
-                        this.$g.wallet.getAccount(this, v).then(sum => {
-                            if (sum== 'errorCode') {
-                                v.sum=0;
+                        this.$g.wallet.getAccount(this, v).then(model => {
+                            v.model=model;
+                            if (model.balanceNQT) {
+
+                                v.sum= this.$g.wallet.amount(model.balanceNQT);
                             } else {
-                                v.sum = sum;
-                            }
-                            if(sum=='errorCode404'){
                                 v.sum=0;
+                            }
+                            if(model=='errorCode404'){
                                 v.is = true;
+                                v.price=0;
                             }else{
                                 v.is = false;
                             }
@@ -113,7 +117,6 @@
                         model.push(v);
                     })
                     this.$store.commit('setWalletList2',model)
-
                 }
                 this.ticker()
             },
@@ -170,11 +173,34 @@
                 this.list();
             }, 3000);
             this.update()
+//            var app = {
+//                // Application Constructor
+//                initialize: function () {
+//                    document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+//                },
+//                onDeviceReady: function () {
+//                    console.log(device.uuid);
+//                },
+//            };
+//            app.initialize();
+
         }
     }
 </script>
 
 <style lang="less">
+    .exchange{
+        .list-item__center{
+            padding: 0;
+        }
+    }
+    .select{
+        width: 100%;
+        .select-input{
+            font-size: 14px;
+        }
+    }
+
     .app_walletList{
         padding-bottom: 20px;margin-top: 60px;border-bottom: 1px solid rgb(74, 98, 123);
         .app_walletList_div{
@@ -218,11 +244,14 @@
             border: none;
         }
     }
-    body {
-        background: none transparent;
+    html,body {
+        background-color:transparent !important;
     }
 
     .page__content {
+        top: 0 !important;
+    }
+    .toolbar+.page__background {
         top: 0 !important;
     }
 </style>
