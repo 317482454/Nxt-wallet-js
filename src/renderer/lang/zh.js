@@ -260,6 +260,7 @@ export const l = {
         amount:'请输入正确的数量',
         addr:'请输入正确的地址',
         sent:'发送失败',
-        node:'节点错误'
+        node:'节点错误',
+        transactionBytes:'交易信息对比有误，请切换节点再次尝试'
     }
 }

@@ -90,16 +90,16 @@
                     }
                     sum.forEach(v=>{
                         v.time=this.$g.wallet.formatDateTime(v.timestamp*1000+(this.epochBeginning - 500));
-                        v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(2);
-                        v.fee=(parseInt(v.feeNQT)*0.00000001).toFixed(2);
+                        v.sum=(parseInt(v.amountNQT)*0.00000001).toFixed(4);
+                        v.fee=(parseInt(v.feeNQT)*0.00000001).toFixed(4);
                         if(this.$store.state.pageText.txt=='Mtr'){
                             v.time=this.$g.wallet.formatDateTime(v.timestamp+(this.epochBeginning - 500));
-                            v.sum=(parseInt(v.amountMQT)*0.00000001).toFixed(2);
-                            v.fee=(parseInt(v.feeMQT)*0.00000001).toFixed(2);
+                            v.sum=(parseInt(v.amountMQT)*0.00000001).toFixed(4);
+                            v.fee=(parseInt(v.feeMQT)*0.00000001).toFixed(4);
                         }
                         if(this.$store.state.pageText.txt=='Apl'){
-                            v.sum=(parseInt(v.amountATM)*0.00000001).toFixed(2);
-                            v.fee=(parseInt(v.feeATM)*0.00000001).toFixed(2);
+                            v.sum=(parseInt(v.amountATM)*0.00000001).toFixed(4);
+                            v.fee=(parseInt(v.feeATM)*0.00000001).toFixed(4);
                         }
                         if(v.senderRS.split("-")[0]!=this.$store.state.pageText.txt.toUpperCase()){
                             v.senderRS=this.$g.wallet.addrReplace(v.senderRS,this.$store.state.pageText.txt.toUpperCase());

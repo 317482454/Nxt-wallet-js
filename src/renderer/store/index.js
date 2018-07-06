@@ -22,7 +22,7 @@ export default new Vuex.Store({
             key:'6808c1758d0aeebe8e857d1cd46cd33b70c0a30685af4bea785d82f65b920d75',
         },
         url:'http://www.walletnxt.com:8080/',
-        version:'1.0.5'
+        version:'1.0.6'
     },
     mutations: {
         ['setWalletIndex'](state,index){

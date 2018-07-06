@@ -263,6 +263,8 @@ export const l = {
         amount:'Please enter the correct amount',
         addr:'Please enter the correct address',
         sent:'Failed to send',
-        node:'Wrong node'
+        node:'Wrong node',
+        transactionBytes:'The transaction information is wrong. Please switch nodes and try again.'
+
     }
 }
