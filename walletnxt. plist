@@ -30,7 +30,7 @@
                     <!-- 注意：应用程序identifier -->
                     <string>io.nxt.wallet</string>
                     <key>bundle-version</key>
-                    <string>1.0</string>
+                    <string>1.0.8</string>
                     <key>kind</key>
                     <string>software</string>
                     <key>subtitle</key>
