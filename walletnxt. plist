@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>items</key>
+        <array>
+            <dict>
+                <key>assets</key>
+                <array>
+                    <dict>
+                        <key>kind</key>
+                        <string>software-package</string>
+                        <key>url</key>
+                        <!-- 注意：IPA文件URL -->
+                        <string>http://lxxh.lzw.me/pages/lxxh/ios/lxxh-latest.ipa</string>
+                    </dict>
+                    <dict>
+                        <key>kind</key>
+                        <string>display-image</string>
+                        <key>needs-shine</key>
+                        <true/>
+                        <key>url</key>
+                        <!-- 注意：应用程序icon url, 57x57 -->
+                        <string>http://lxxh.lzw.me/pages/lxxh/webapp/img/icon/57.png</string>
+                    </dict>
+                </array>
+                <key>metadata</key>
+                <dict>
+                    <key>bundle-identifier</key>
+                    <!-- 注意：应用程序identifier -->
+                    <string>com.sinaapp.SAElzwmeapp</string>
+                    <key>bundle-version</key>
+                    <string>1.0</string>
+                    <key>kind</key>
+                    <string>software</string>
+                    <key>subtitle</key>
+                    <string>lzw.me</string>
+                    <key>title</key>
+                    <!-- 注意：应用程序名称 -->
+                    <string>离线笑话</string>
+                </dict>
+            </dict>
+        </array>
+    </dict>
+</plist>
