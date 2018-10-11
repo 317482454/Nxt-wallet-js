@@ -12,7 +12,7 @@
                         <string>software-package</string>
                         <key>url</key>
                         <!-- 注意：IPA文件URL -->
-                        <string>http://lxxh.lzw.me/pages/lxxh/ios/lxxh-latest.ipa</string>
+                        <string>https://github.com/317482454/Nxt-wallet-js/releases/download/master/walletnxt.ipa</string>
                     </dict>
                     <dict>
                         <key>kind</key>
@@ -21,14 +21,14 @@
                         <true/>
                         <key>url</key>
                         <!-- 注意：应用程序icon url, 57x57 -->
-                        <string>http://lxxh.lzw.me/pages/lxxh/webapp/img/icon/57.png</string>
+                        <string>https://raw.githubusercontent.com/317482454/Nxt-wallet-js/master/wallet-app/res/icon/ios/icon-57.png</string>
                     </dict>
                 </array>
                 <key>metadata</key>
                 <dict>
                     <key>bundle-identifier</key>
                     <!-- 注意：应用程序identifier -->
-                    <string>com.sinaapp.SAElzwmeapp</string>
+                    <string>io.nxt.wallet</string>
                     <key>bundle-version</key>
                     <string>1.0</string>
                     <key>kind</key>
@@ -37,7 +37,7 @@
                     <string>lzw.me</string>
                     <key>title</key>
                     <!-- 注意：应用程序名称 -->
-                    <string>离线笑话</string>
+                    <string>Nxt Wallet</string>
                 </dict>
             </dict>
         </array>
